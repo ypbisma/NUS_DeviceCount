@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java">
+		<attributes>
+			<attribute name="FROM_GRADLE_MODEL" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/test/java">
+		<attributes>
+			<attribute name="FROM_GRADLE_MODEL" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/slf4j-1.7.22/slf4j-api-1.7.22.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/slf4j-1.7.22/slf4j-simple-1.7.22.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/quartz-2.2.3/lib/quartz-2.2.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/sqlite-jdbc-3.8.11.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/httpclient-4.4-alpha1.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/jsoup-1.10.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/httpcore-4.4-alpha1.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/commons-logging-1.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
