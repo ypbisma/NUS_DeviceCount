@@ -57,13 +57,29 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
-	public void insertZoneAggregate(String buildingId, String buildingName, String deviceCount, String time) {
-		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time)" + " VALUES(?,?,?,?)";
+	public void insertZoneAggregate(String zoneId, String zoneName, String deviceCount, String time) {
+		String insertSql = "INSERT INTO AggregateZone (zoneId, zoneName, deviceCount, time)" + " VALUES(?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
-			insertStatement.setString(1, buildingId);
-			insertStatement.setString(2, buildingName);
+			insertStatement.setString(1, zoneId);
+			insertStatement.setString(2, zoneName);
+			insertStatement.setString(3, deviceCount);
+			insertStatement.setString(4, time);
+			insertStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void insertUniAggregate(String uniId, String uniName, String deviceCount, String time) {
+		String insertSql = "INSERT INTO AggregateUniversity (uniId, uniName, deviceCount, time)" + " VALUES(?,?,?,?)";
+
+		try (Connection conn = this.connectDeviceCountDatabase();
+				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
+			insertStatement.setString(1, uniId);
+			insertStatement.setString(2, uniName);
 			insertStatement.setString(3, deviceCount);
 			insertStatement.setString(4, time);
 			insertStatement.executeUpdate();
@@ -96,4 +112,5 @@ public class DeviceCountDatabaseManager {
 			e.printStackTrace();
 		}
 	}
+	
 }

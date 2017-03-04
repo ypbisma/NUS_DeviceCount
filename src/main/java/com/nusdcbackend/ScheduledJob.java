@@ -1,5 +1,7 @@
 package com.nusdcbackend;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -9,8 +11,8 @@ import com.nusdcbackend.LoginManager;
 
 public class ScheduledJob implements org.quartz.Job {
 	String token;
-	private static Date now = new Date(); // to display current time
-
+	private Calendar cal = Calendar.getInstance();
+	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
 	public ScheduledJob() {
 	}
@@ -25,7 +27,7 @@ public class ScheduledJob implements org.quartz.Job {
 
 			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
 			jobDeviceCount.execute();
-			System.out.println(now);
+			System.out.println(sdf.format(cal.getTime()));
 
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());

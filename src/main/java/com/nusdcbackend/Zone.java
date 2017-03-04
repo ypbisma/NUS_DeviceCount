@@ -8,6 +8,8 @@ public class Zone {
 	}
 	private String zoneId;
 	private String zoneName;
+	private String count;
+	
 	public String getZoneId() {
 		return zoneId;
 	}
@@ -19,5 +21,11 @@ public class Zone {
 	}
 	public void setZoneName(String zoneName) {
 		this.zoneName = zoneName;
+	}
+	public String getCount() {
+		return count;
+	}
+	public void setCount(String count) {
+		this.count = count;
 	}
 }

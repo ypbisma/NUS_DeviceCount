@@ -18,8 +18,9 @@ public class JobDeviceCount {
 	private Calendar cal = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-	private Integer zoneSum = 0;
+	private Integer zoneSum;
 	private Integer buildingSum;
+	private Integer uniSum;
 
 	public JobDeviceCount(String token) throws Exception {
 		deviceCountManager = new DeviceCountManager(token);
@@ -45,17 +46,27 @@ public class JobDeviceCount {
 			item.setCount(deviceCountManager.getDeviceCount().getCount().toString());
 		}
 		
-		
-		for (Building buildingItem : buildingList) {
-			buildingSum = 0;
-			for (ZoneBuildingFloor location : zoneBuildingFloorList) {
-				if (location.getBuilding().equals(buildingItem.getBuildingName())) {
-					Integer count = Integer.parseInt(location.getCount());
-					buildingSum = buildingSum + count;
+		uniSum = 0;
+		for (Zone zone : zoneList) {
+			zoneSum = 0;
+			for (Building buildingItem : buildingList) {
+				buildingSum = 0;
+				for (ZoneBuildingFloor location : zoneBuildingFloorList) {
+					if (location.getBuilding().equals(buildingItem.getBuildingName())) {
+						Integer count = Integer.parseInt(location.getCount());
+						buildingSum = buildingSum + count;
+					}
+				}
+				deviceCountDatabaseManager.insertBuildingAggregate(buildingItem.getBuildingId(),
+						buildingItem.getBuildingName(), buildingSum.toString(), executeTime);
+				if (buildingItem.getZoneId().equals(zone.getZoneId())) {
+					zoneSum = zoneSum + buildingSum;
 				}
 			}
-			deviceCountDatabaseManager.insertBuildingAggregate(buildingItem.getBuildingId(),
-					buildingItem.getBuildingName(), buildingSum.toString(), executeTime);
+			deviceCountDatabaseManager.insertZoneAggregate(zone.getZoneId(), zone.getZoneName(), zoneSum.toString(),
+					executeTime);
+			uniSum = uniSum + zoneSum;
 		}
+		deviceCountDatabaseManager.insertUniAggregate("1", "NUS", uniSum.toString(), executeTime);
 	}
 }
