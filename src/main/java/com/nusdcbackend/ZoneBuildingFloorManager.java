@@ -2,7 +2,6 @@ package com.nusdcbackend;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
@@ -14,21 +13,27 @@ import com.google.gson.Gson;
 
 public class ZoneBuildingFloorManager {
 	private String zoneListBranch;
-	private int token;
+	private String token;
 	private String zoneListUrl;
 	private String buildingListBranch;
 	private String buildingListUrl;
-	private String API_URL;
+	private static final String API_URL = "https://api.ami-lab.org";
 	private String floorListBranch;
 	private String floorListUrl;
 
+	private String[] allZones;
+	private String[] allBuildings;
+	private String[] allFloors;
+
+	public ZoneBuildingFloorManager(String token){
+		this.token = token;
+	}
 	public void syncZoneList() throws Exception {
 		try {
 			this.zoneListBranch = "/api/v1/cisco/zones" + "?token=";
 			this.zoneListUrl = API_URL + zoneListBranch + token;
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(this.zoneListUrl);
-
 			HttpResponse response = client.execute(request);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			StringBuffer result = new StringBuffer();
@@ -40,7 +45,7 @@ public class ZoneBuildingFloorManager {
 			Gson gson = new Gson();
 
 			this.setAllZones(gson.fromJson(result.toString(), String[].class));
-
+			
 		} catch (UnknownHostException e) {
 			System.out.println("no internet connection!");
 		} catch (Exception e) {
@@ -73,13 +78,14 @@ public class ZoneBuildingFloorManager {
 			e.printStackTrace();
 		}
 	}
-	
-	private void syncFloorList(String zone, String building) {
+
+	public void syncFloorList(String zone, String building) {
 		try {
 			this.floorListBranch = "/api/v1/cisco/zone/" + zone + "/building/" + building + "/floors" + "?token=";
 			this.floorListUrl = API_URL + floorListBranch + token;
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(this.floorListUrl);
+			System.out.println(floorListUrl);
 
 			HttpResponse response = client.execute(request);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -99,4 +105,31 @@ public class ZoneBuildingFloorManager {
 			e.printStackTrace();
 		}
 	}
+
+	public String[] getAllZones() {
+		return allZones;
+	}
+
+	public void setAllZones(String[] allZones) {
+		this.allZones = allZones;
+	}
+
+	public String[] getAllBuildings() {
+		return allBuildings;
+	}
+
+	public void setAllBuildings(String[] allBuildings) {
+		this.allBuildings = allBuildings;
+	}
+
+	public String[] getAllFloors() {
+		return allFloors;
+	}
+
+	public void setAllFloors(String[] allFloors) {
+		this.allFloors = allFloors;
+	}
+
+	
+
 }

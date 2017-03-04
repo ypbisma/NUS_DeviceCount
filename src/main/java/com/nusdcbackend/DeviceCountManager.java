@@ -24,13 +24,6 @@ public class DeviceCountManager {
 	private String deviceCountUrl;
 
 	// ZONEBUILDINGFLOOR LIST
-	private String zoneListBranch;
-	private String buildingListBranch;
-	private String floorListBranch;
-	private String zoneListUrl;
-	private String buildingListUrl;
-	private String floorListUrl;
-
 	private String[] zoneList;
 	private String[] buildingList;
 	private String[] floorList;
@@ -39,7 +32,6 @@ public class DeviceCountManager {
 
 	public DeviceCountManager(String token) {
 		this.token = token;
-
 	}
 
 	public void syncDeviceCount() throws Exception {
@@ -70,12 +62,6 @@ public class DeviceCountManager {
 			e.printStackTrace();
 		}
 	}
-
-	
-
-	
-
-	
 
 	public String getDeviceLocationString() {
 		return deviceLocationString;

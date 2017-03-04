@@ -2,23 +2,24 @@ package com.nusdcbackend;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 
-import java.util.Date;
-
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class ProjectMain {
+	private static ZoneBuildingFloorDatabaseManager zoneBuildingFloorList;
 	private static LoginManager loginManager = new LoginManager();
-	private static String token = loginManager.getToken();
-	private static ZoneBuildingFloorDatabaseManager zoneBuildingFloorList = new ZoneBuildingFloorDatabaseManager(token);
 
-	public static void main(String[] args) throws Exception {		
+	public static void main(String[] args) throws Exception {
+		loginManager.login();
+		String token = loginManager.getToken();
+		zoneBuildingFloorList = new ZoneBuildingFloorDatabaseManager(token);
+
 		zoneBuildingFloorList.emptyZoneBuildingFloorDatabase();
+
 		if (zoneBuildingFloorList.zoneBuildingFloorIsEmpty()) {
 			zoneBuildingFloorList.writeZoneBuildingFloor();
 		}
