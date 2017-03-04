@@ -10,22 +10,22 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class ProjectMain {
-	private static ZoneBuildingFloorDatabaseManager zoneBuildingFloorList;
+//	private static ZoneBuildingFloorDatabaseManager zoneBuildingFloorList;
 	private static DeviceCountDatabaseManager deviceCountList;
 	private static LoginManager loginManager = new LoginManager();
 
 	public static void main(String[] args) throws Exception {
 		loginManager.login();
 		String token = loginManager.getToken();
-		zoneBuildingFloorList = new ZoneBuildingFloorDatabaseManager(token);
+//		zoneBuildingFloorList = new ZoneBuildingFloorDatabaseManager(token);
 		deviceCountList = new DeviceCountDatabaseManager();
 		
-		zoneBuildingFloorList.emptyZoneBuildingFloorDatabase();
+//		zoneBuildingFloorList.emptyZoneBuildingFloorDatabase();
 		deviceCountList.emptyDeviceCountDatabase();
 
-		if (zoneBuildingFloorList.zoneBuildingFloorIsEmpty()) {
-			zoneBuildingFloorList.writeZoneBuildingFloor();
-		}
+//		if (zoneBuildingFloorList.zoneBuildingFloorIsEmpty()) {
+//			zoneBuildingFloorList.writeZoneBuildingFloor();
+//		}
 		try {
 			// Grab the Scheduler instance from the Factory
 			Scheduler scheduler1 = StdSchedulerFactory.getDefaultScheduler();

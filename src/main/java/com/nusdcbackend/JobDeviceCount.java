@@ -1,13 +1,11 @@
 package com.nusdcbackend;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Vector;
+import java.util.HashMap;
 
 public class JobDeviceCount {
-	private String token;
 	private DeviceCountManager deviceCountManager;
 	private ArrayList<ZoneBuildingFloor> zoneBuildingFloorList = new ArrayList<>();
 	private ArrayList<Zone> zoneList = new ArrayList<>();
@@ -22,6 +20,9 @@ public class JobDeviceCount {
 	private Integer buildingSum;
 	private Integer uniSum;
 
+	HashMap<String, String> buildingMap = new HashMap<String, String>();
+	HashMap<String, String> zoneMap = new HashMap<String, String>();
+
 	public JobDeviceCount(String token) throws Exception {
 		deviceCountManager = new DeviceCountManager(token);
 		zoneBuildingFloorDatabaseManager = new ZoneBuildingFloorDatabaseManager(token);
@@ -35,6 +36,7 @@ public class JobDeviceCount {
 		buildingList = zoneBuildingFloorDatabaseManager.getBuildings();
 		floorList = zoneBuildingFloorDatabaseManager.getFloors();
 
+		uniSum = 0;
 		for (ZoneBuildingFloor item : zoneBuildingFloorList) {
 			deviceCountManager.setZoneName(item.getZone());
 			deviceCountManager.setBuildingName(item.getBuilding());
@@ -44,29 +46,51 @@ public class JobDeviceCount {
 					deviceCountManager.getBuildingName(), deviceCountManager.getFloorName(),
 					deviceCountManager.getDeviceCount().getCount().toString(), executeTime);
 			item.setCount(deviceCountManager.getDeviceCount().getCount().toString());
-		}
-		
-		uniSum = 0;
-		for (Zone zone : zoneList) {
-			zoneSum = 0;
-			for (Building buildingItem : buildingList) {
-				buildingSum = 0;
-				for (ZoneBuildingFloor location : zoneBuildingFloorList) {
-					if (location.getBuilding().equals(buildingItem.getBuildingName())) {
-						Integer count = Integer.parseInt(location.getCount());
-						buildingSum = buildingSum + count;
-					}
-				}
-				deviceCountDatabaseManager.insertBuildingAggregate(buildingItem.getBuildingId(),
-						buildingItem.getBuildingName(), buildingSum.toString(), executeTime);
-				if (buildingItem.getZoneId().equals(zone.getZoneId())) {
-					zoneSum = zoneSum + buildingSum;
-				}
+
+			if (buildingMap.containsKey(item.getBuilding())) {
+				Integer newBuildingSum = Integer.parseInt(buildingMap.get(item.getBuilding())) + Integer.parseInt(item.getCount());
+				buildingMap.put(item.getBuilding(), newBuildingSum.toString());
+			} else {
+				buildingMap.put(item.getBuilding(), item.getCount());
 			}
-			deviceCountDatabaseManager.insertZoneAggregate(zone.getZoneId(), zone.getZoneName(), zoneSum.toString(),
+
+			if (zoneMap.containsKey(item.getZone())) {
+				Integer newZoneSum = Integer.parseInt(zoneMap.get(item.getZone())) + Integer.parseInt(item.getCount());
+				zoneMap.put(item.getZone(), newZoneSum.toString());
+			} else {
+				zoneMap.put(item.getZone(), item.getCount());
+			}
+
+			uniSum = uniSum + Integer.parseInt(item.getCount());
+		}
+
+		for (String building : buildingMap.keySet()) {
+			deviceCountDatabaseManager.insertBuildingAggregate(this.getBuildingId(building, buildingList), building,
+					buildingMap.get(building), executeTime);
+		}
+
+		for (String zone : zoneMap.keySet()) {
+			deviceCountDatabaseManager.insertZoneAggregate(this.getZoneId(zone, zoneList), zone, zoneMap.get(zone),
 					executeTime);
-			uniSum = uniSum + zoneSum;
 		}
 		deviceCountDatabaseManager.insertUniAggregate("1", "NUS", uniSum.toString(), executeTime);
+	}
+
+	public String getBuildingId(String key, ArrayList<Building> list) {
+		for (Building item : list) {
+			if (item.getBuildingName().equals(key)) {
+				return item.getBuildingId();
+			}
+		}
+		return null;
+	}
+
+	public String getZoneId(String key, ArrayList<Zone> list) {
+		for (Zone item : list) {
+			if (item.getZoneName().equals(key)) {
+				return item.getZoneId();
+			}
+		}
+		return null;
 	}
 }
