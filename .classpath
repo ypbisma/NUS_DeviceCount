@@ -24,5 +24,8 @@
 	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/weka-3-7-5/weka-src.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/weka-3-7-5/weka.jar"/>
+	<classpathentry kind="lib" path="/Users/Bisma/DeviceCount/DeviceCount_Backend/NUS_DC/external_library/OpenForecast-0.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
