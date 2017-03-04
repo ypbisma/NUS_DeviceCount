@@ -28,7 +28,7 @@ public class ScheduledJob implements org.quartz.Job {
 			System.out.println(now);
 
 		} catch (NullPointerException e) {
-			System.out.println("Data does not exist");
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

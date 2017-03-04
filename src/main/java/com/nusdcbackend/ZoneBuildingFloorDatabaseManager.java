@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import com.nusdcbackend.ZoneBuildingFloor;
 
 public class ZoneBuildingFloorDatabaseManager {
-	private String token;
 	private String[] allZones;
 	private String[] allBuildings;
 	private String[] allFloors;
 	private ZoneBuildingFloorManager zoneBuildingFloorManager;
 
 	public ZoneBuildingFloorDatabaseManager(String token) {
-		this.token = token;
 		zoneBuildingFloorManager = new ZoneBuildingFloorManager(token);
 	}
 
@@ -106,7 +104,7 @@ public class ZoneBuildingFloorDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	private void insertFloor(String floorId, String floorName, String buildingId) {
 		String insertSql = "INSERT INTO Floor (floorId, floorName, buildingId)" + " VALUES(?,?,?)";
 		String selectSql = "Select count(*) from Floor WHERE floorName = ?";
@@ -148,7 +146,7 @@ public class ZoneBuildingFloorDatabaseManager {
 				zoneBuildingFloorManager.syncFloorList(zone, building);
 				allFloors = zoneBuildingFloorManager.getAllFloors();
 				this.insertBuilding(buildingId.toString(), building, zoneId.toString());
-				
+
 				for (String floor : allFloors) {
 					insertZoneBuildingFloor(zone, building, floor);
 					this.insertFloor(floorId.toString(), floor, buildingId.toString());
@@ -191,7 +189,6 @@ public class ZoneBuildingFloorDatabaseManager {
 			deleteZoneStatement.executeUpdate();
 			deleteBuildingStatement.executeUpdate();
 
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -217,6 +214,65 @@ public class ZoneBuildingFloorDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 		return zoneBuildingFloorList;
+	}
+
+	public ArrayList<Zone> getZones() {
+		ArrayList<Zone> zoneList = new ArrayList<>();
+		try (Connection conn = this.connectZoneBuildingFloorDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+			String sql = "SELECT * from Zone";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"));
+				zoneList.add(zoneItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return zoneList;
+	}
+
+	public ArrayList<Building> getBuildings() {
+		ArrayList<Building> buildingList = new ArrayList<>();
+		try (Connection conn = this.connectZoneBuildingFloorDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+			String sql = "SELECT * from Building";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Building buildingItem = new Building(res.getString("buildingId"), res.getString("buildingName"),
+						res.getString("zoneId"));
+				buildingList.add(buildingItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return buildingList;
+	}
+	
+	public ArrayList<Floor> getFloors() {
+		ArrayList<Floor> floorList = new ArrayList<>();
+		try (Connection conn = this.connectZoneBuildingFloorDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+			String sql = "SELECT * from Floor";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Floor floorItem = new Floor(res.getString("floorId"), res.getString("floorName"),
+						res.getString("buildingId"));
+				floorList.add(floorItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return floorList;
 	}
 
 	public String[] getAllZones() {

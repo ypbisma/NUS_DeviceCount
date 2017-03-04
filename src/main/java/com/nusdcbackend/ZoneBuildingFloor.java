@@ -5,6 +5,7 @@ public class ZoneBuildingFloor {
 	private String zone;
 	private String building;
 	private String floor;
+	private String count;
 	
 	public ZoneBuildingFloor(String zone, String building, String floor){
 		this.zone = zone;
@@ -29,5 +30,13 @@ public class ZoneBuildingFloor {
 	}
 	public void setFloor(String floor) {
 		this.floor = floor;
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
 	}
 }
