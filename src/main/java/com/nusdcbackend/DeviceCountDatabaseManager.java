@@ -6,7 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class DeviceCountDatabaseManager {
 
@@ -93,7 +97,7 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 	
-	public void insertZoneForecast(String zoneId, String zoneName, String deviceCount, String time) {
+	public void insertZoneForecast(String zoneId, String zoneName, String deviceCount, Calendar time) {
 		String insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, deviceCount, time)" + " VALUES(?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
@@ -101,7 +105,7 @@ public class DeviceCountDatabaseManager {
 			insertStatement.setString(1, zoneId);
 			insertStatement.setString(2, zoneName);
 			insertStatement.setString(3, deviceCount);
-			insertStatement.setString(4, time);
+			insertStatement.setString(4, this.calendarToString(time));
 			insertStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -155,6 +159,49 @@ public class DeviceCountDatabaseManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void emptyForecastTable() {
+
+		String deleteZoneBuildingFloor = "DELETE from DeviceCount";
+		String deleteBuilding = "DELETE from ForecastBuilding";
+		String deleteZone = "DELETE from ForecastZone";
+		String deleteUniversity = "DELETE from ForecastUniversity";
+
+		try (Connection conn = this.connectDeviceCountDatabase();
+				PreparedStatement deleteZbfStatement = conn.prepareStatement(deleteZoneBuildingFloor);
+				PreparedStatement deleteBuildingStatement = conn.prepareStatement(deleteBuilding);
+				PreparedStatement deleteZoneStatement = conn.prepareStatement(deleteZone);
+				PreparedStatement deleteUniStatement = conn.prepareStatement(deleteUniversity);) {
+
+			deleteZbfStatement.executeUpdate();
+			deleteBuildingStatement.executeUpdate();
+			deleteZoneStatement.executeUpdate();
+			deleteUniStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private Calendar stringToCalendar (String timeString){
+		Calendar time = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		try {
+			time.setTime(sdf.parse(timeString));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
+	}
+	
+	private String calendarToString (Calendar timeCalendar){
+		String time;
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		time = sdf.format(timeCalendar.getTime()); 
+		return time;
 	}
 	
 }

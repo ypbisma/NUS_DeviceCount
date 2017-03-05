@@ -14,13 +14,13 @@ public class DeviceCountForecaster {
 	public Zone movingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneName, String zoneId) {
 		Zone zoneToWrite = new Zone(zoneName, zoneId);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
-		String time = null;
+		Calendar time = null;
 		Double average = 0.0;
 		
 		for (Zone zoneAggregate : inputZoneArray) {
 			if (zoneAggregate.getZoneName().equals(zoneName)){
 				integerList.add(Integer.parseInt(zoneAggregate.getCount()));
-				time = this.calendarToString(zoneAggregate.getTime());
+				time = zoneAggregate.getTime();
 			}
 		}
 
@@ -34,7 +34,6 @@ public class DeviceCountForecaster {
 		// after every 100 observations
 		long nLines = 0;
 		for (int d : integerList) {
-			System.out.println(d);
 			stats.addValue((double) d);
 			nLines++;
 			if (nLines >= step) {
@@ -42,25 +41,25 @@ public class DeviceCountForecaster {
 			}
 		}
 		zoneToWrite.setCount(average.toString());
-		zoneToWrite.setTime(this.stringToCalendar(time));
+		zoneToWrite.setTime(time);
 		return zoneToWrite;
 	}
 	
-	private Calendar stringToCalendar (String timeString){
-		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
-		try {
-			time.setTime(sdf.parse(timeString));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return time;
-	}
-	
-	private String calendarToString (Calendar timeCalendar){
-		String time;
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-		time = sdf.format(timeCalendar.getTime()); 
-		return time;
-	}
+//	private Calendar stringToCalendar (String timeString){
+//		Calendar time = Calendar.getInstance();
+//		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+//		try {
+//			time.setTime(sdf.parse(timeString));
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//		return time;
+//	}
+//	
+//	private String calendarToString (Calendar timeCalendar){
+//		String time;
+//		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+//		time = sdf.format(timeCalendar.getTime()); 
+//		return time;
+//	}
 }
