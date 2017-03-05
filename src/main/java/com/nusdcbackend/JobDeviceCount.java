@@ -62,6 +62,8 @@ public class JobDeviceCount {
 			}
 
 			uniSum = uniSum + Integer.parseInt(item.getCount());
+			
+
 		}
 
 		for (String building : buildingMap.keySet()) {

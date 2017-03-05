@@ -3,12 +3,15 @@ package com.nusdcbackend;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DeviceCountDatabaseManager {
 
 	private Connection connectDeviceCountDatabase() {
-		// SQLite connection string
+		// SQLite connection strings
 		String url = "jdbc:sqlite:/Users/Bisma/DeviceCount/DeviceCount_Serverapp/nusdc.db";
 		Connection conn = null;
 		try {
@@ -42,7 +45,8 @@ public class DeviceCountDatabaseManager {
 	}
 
 	public void insertBuildingAggregate(String buildingId, String buildingName, String deviceCount, String time) {
-		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time)" + " VALUES(?,?,?,?)";
+		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time)"
+				+ " VALUES(?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
@@ -72,7 +76,7 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public void insertUniAggregate(String uniId, String uniName, String deviceCount, String time) {
 		String insertSql = "INSERT INTO AggregateUniversity (uniId, uniName, deviceCount, time)" + " VALUES(?,?,?,?)";
 
@@ -89,6 +93,46 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 	
+	public void insertZoneForecast(String zoneId, String zoneName, String deviceCount, String time) {
+		String insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, deviceCount, time)" + " VALUES(?,?,?,?)";
+
+		try (Connection conn = this.connectDeviceCountDatabase();
+				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
+			insertStatement.setString(1, zoneId);
+			insertStatement.setString(2, zoneName);
+			insertStatement.setString(3, deviceCount);
+			insertStatement.setString(4, time);
+			insertStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public ArrayList<Zone> getAggregateZones() {
+
+		ArrayList<Zone> zoneList = new ArrayList<>();
+
+		try (Connection conn = this.connectDeviceCountDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+
+			String sql = "SELECT * from AggregateZone";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
+						res.getString("deviceCount"), res.getString("time"));
+				
+				zoneList.add(zoneItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return zoneList;
+	}
+
 	public void emptyDeviceCountDatabase() {
 
 		String deleteZoneBuildingFloor = "DELETE from DeviceCount";

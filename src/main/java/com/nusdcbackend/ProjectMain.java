@@ -12,16 +12,16 @@ import static org.quartz.SimpleScheduleBuilder.*;
 public class ProjectMain {
 //	private static ZoneBuildingFloorDatabaseManager zoneBuildingFloorList;
 	private static DeviceCountDatabaseManager deviceCountList;
-	private static LoginManager loginManager = new LoginManager();
+//	private static LoginManager loginManager = new LoginManager();
 
 	public static void main(String[] args) throws Exception {
-		loginManager.login();
-		String token = loginManager.getToken();
+//		loginManager.login();
+//		String token = loginManager.getToken();
 //		zoneBuildingFloorList = new ZoneBuildingFloorDatabaseManager(token);
 		deviceCountList = new DeviceCountDatabaseManager();
 		
+//		deviceCountList.emptyDeviceCountDatabase();
 //		zoneBuildingFloorList.emptyZoneBuildingFloorDatabase();
-		deviceCountList.emptyDeviceCountDatabase();
 
 //		if (zoneBuildingFloorList.zoneBuildingFloorIsEmpty()) {
 //			zoneBuildingFloorList.writeZoneBuildingFloor();

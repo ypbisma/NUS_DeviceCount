@@ -1,108 +1,66 @@
 package com.nusdcbackend;
 
-import net.sourceforge.openforecast.Forecaster;
-import net.sourceforge.openforecast.ForecastingModel;
-import net.sourceforge.openforecast.DataSet;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 
-import net.sourceforge.openforecast.DataPoint;
-import net.sourceforge.openforecast.Observation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class DeviceCountForecaster {
-	//
-	// OpenForecast - open source, general-purpose forecasting package.
-	// Copyright (C) 2002-2004 Steven R. Gould
-	//
-	// This library is free software; you can redistribute it and/or
-	// modify it under the terms of the GNU Lesser General Public
-	// License as published by the Free Software Foundation; either
-	// version 2.1 of the License, or (at your option) any later version.
-	//
-	// This library is distributed in the hope that it will be useful,
-	// but WITHOUT ANY WARRANTY; without even the implied warranty of
-	// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-	// Lesser General Public License for more details.
-	//
-	// You should have received a copy of the GNU Lesser General Public
-	// License along with this library; if not, write to the Free Software
-	// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-	//
-	
 
-	public void forecastZone(ArrayList<Zone>zoneList, String desiredZoneId) {
-		// Create some sample observed data values
-		DataSet observedData = new DataSet();
-		DataPoint dp;
-		Integer x = 1;
+	public Zone movingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneName, String zoneId) {
+		Zone zoneToWrite = new Zone(zoneName, zoneId);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		String time = null;
+		Double average = 0.0;
 		
-		for(Zone zonePoint : zoneList){
-			if(zonePoint.getZoneId().equals(desiredZoneId)){
-				dp = new Observation(Integer.parseInt(zonePoint.getCount()));
-				dp.setIndependentValue("x", x);
-				observedData.add(dp);
-				x++;
+		for (Zone zoneAggregate : inputZoneArray) {
+			if (zoneAggregate.getZoneName().equals(zoneName)){
+				integerList.add(Integer.parseInt(zoneAggregate.getCount()));
+				time = this.calendarToString(zoneAggregate.getTime());
 			}
 		}
-//		dp = new Observation(2.1);
-//		dp.setIndependentValue("x", 0);
-//		observedData.add(dp);
-//
-//		dp = new Observation(7.7);
-//		dp.setIndependentValue("x", 1);
-//		observedData.add(dp);
-//
-//		dp = new Observation(13.6);
-//		dp.setIndependentValue("x", 2);
-//		observedData.add(dp);
-//
-//		dp = new Observation(27.2);
-//		dp.setIndependentValue("x", 3);
-//		observedData.add(dp);
-//
-//		dp = new Observation(40.9);
-//		dp.setIndependentValue("x", 4);
-//		observedData.add(dp);
-//
-//		dp = new Observation(61.1);
-//		dp.setIndependentValue("x", 5);
-//		observedData.add(dp);
-//
-//		dp = new Observation(59.2);
-//		dp.setIndependentValue("x", 6);
-//		
 
-		System.out.println("Input data, observed values");
-		System.out.println(observedData);
+		HashMap<String, Double> zoneForecastKey = new HashMap<String, Double>();
 
-		// Obtain a good forecasting model given this data set
-		ForecastingModel forecaster = Forecaster.getBestForecast(observedData);
-		System.out.println("Forecast model type selected: " + forecaster.getForecastType());
-		System.out.println(forecaster.toString());
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		stats.setWindowSize(step);
 
-		// Create additional data points for which forecast values are required
-		DataSet requiredDataPoints = new DataSet();
-		for (int count = 7; count < 15; count++) {
-			dp = new Observation(0.0);
-			dp.setIndependentValue("x", count);
-
-			requiredDataPoints.add(dp);
+		// Read data from an input stream,
+		// displaying the mean of the most recent 100 observations
+		// after every 100 observations
+		long nLines = 0;
+		for (int d : integerList) {
+			System.out.println(d);
+			stats.addValue((double) d);
+			nLines++;
+			if (nLines >= step) {
+				average = stats.getMean();
+			}
 		}
-
-		// Dump data set before forecast
-		System.out.println("Required data set before forecast");
-		System.out.println(requiredDataPoints);
-
-		// Use the given forecasting model to forecast values for
-		// the required (future) data points
-		forecaster.forecast(requiredDataPoints);
-
-		// Output the results
-		System.out.println("Output data, forecast values");
-		System.out.println(requiredDataPoints);
-
+		zoneToWrite.setCount(average.toString());
+		zoneToWrite.setTime(this.stringToCalendar(time));
+		return zoneToWrite;
 	}
-	// Local variables:
-	// tab-width: 4
-	// End:
+	
+	private Calendar stringToCalendar (String timeString){
+		Calendar time = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		try {
+			time.setTime(sdf.parse(timeString));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
+	}
+	
+	private String calendarToString (Calendar timeCalendar){
+		String time;
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		time = sdf.format(timeCalendar.getTime()); 
+		return time;
+	}
 }

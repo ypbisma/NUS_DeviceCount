@@ -7,12 +7,18 @@ import java.util.Locale;
 
 public class Zone {
 	
-	public Zone(String zoneId, String zoneName, String timeString){
+	public Zone(String zoneId, String zoneName){
+		this.zoneId = zoneId;
+		this.zoneName = zoneName;
+	}
+	
+	public Zone(String zoneId, String zoneName, String count, String timeString){
 		this.zoneId = zoneId;
 		this.zoneName = zoneName;
 		this.timeString = timeString;
+		this.count = count;
 		time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {

@@ -226,7 +226,7 @@ public class ZoneBuildingFloorDatabaseManager {
 			res = stmt.executeQuery(sql);
 
 			while (res.next()) {
-				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"), res.getString("time"));
+				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"));
 				zoneList.add(zoneItem);
 			}
 		} catch (SQLException e) {
