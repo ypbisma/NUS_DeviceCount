@@ -102,8 +102,7 @@ public class DeviceCountDatabaseManager {
 	public void insertZoneForecast(String zoneId, String zoneName, String forecast, Calendar time, String method) {
 		String insertSql = null;
 		String updateSql = null;
-		String selectSql = null;
-
+		String selectString = null;
 		String lastZoneId = null;
 		String lastTime = null;
 
@@ -113,17 +112,27 @@ public class DeviceCountDatabaseManager {
 
 		switch (method) {
 		case "ma3":
-			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
-			updateSql = "UPDATE ForecastZone set ma3 = ? where rowid = ?";
+			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneMa3 set ma3 = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneMa3";
 			break;
 		case "ma5":
-			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
-			updateSql = "UPDATE ForecastZone set ma5 = ? where rowid = ?";
+			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneMa5 set ma5 = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneMa5";
 			break;
 		case "wam":
-			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
-			updateSql = "UPDATE ForecastZone set wa = ? where rowid = ?";
+			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneWa set wa = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneWa";
+			break;
+		case "es":
+			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneEs set es = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneEs";
+			break;
 		default:
+			break;
 		}
 
 		try (Connection conn = this.connectDeviceCountDatabase();
@@ -131,7 +140,7 @@ public class DeviceCountDatabaseManager {
 				PreparedStatement updateStatement = conn.prepareStatement(updateSql);
 				Statement statement = conn.createStatement()) {
 
-			ResultSet res = statement.executeQuery("SELECT * FROM ForecastZone");
+			ResultSet res = statement.executeQuery(selectString);
 			while (res.next()) {
 				lastZoneId = res.getString("zoneId");
 				lastTime = res.getString("time");
@@ -176,7 +185,6 @@ public class DeviceCountDatabaseManager {
 			while (res.next()) {
 				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
 						res.getString("deviceCount"), res.getString("time"));
-
 				zoneList.add(zoneItem);
 			}
 		} catch (SQLException e) {
@@ -185,28 +193,31 @@ public class DeviceCountDatabaseManager {
 		return zoneList;
 	}
 
-	public ArrayList<ForecastData> getForecastZones() {
+	public ArrayList<ForecastData> getForecastZones(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
+		String capitalisedType = type.substring(0, 1).toUpperCase() + type.substring(1);
+		String typeId = type + "Id";
+		String typeName = type + "Name";
 
 		try (Connection conn = this.connectDeviceCountDatabase();) {
 			Statement stmt;
 			stmt = conn.createStatement();
 
-			String sql = "SELECT * from ForecastZone";
+			String sql = "SELECT * from ForecastZoneEs";
 			ResultSet res;
 			res = stmt.executeQuery(sql);
 
 			while (res.next()) {
-				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
-						res.getString("deviceCount"), res.getString("time"));
+				ForecastData forecastItem = new ForecastData(type, res.getString(typeId), res.getString(typeName),
+						res.getString("es"), res.getString("time"));
 
-				zoneList.add(zoneItem);
+				forecastList.add(forecastItem);
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		return zoneList;
+		return forecastList;
 	}
 
 	// EMPTY FUNCTIONS
@@ -239,18 +250,27 @@ public class DeviceCountDatabaseManager {
 
 		String deleteZoneBuildingFloor = "DELETE from DeviceCount";
 		String deleteBuilding = "DELETE from ForecastBuilding";
-		String deleteZone = "DELETE from ForecastZone";
+		String deleteEs = "DELETE from ForecastZoneEs";
+		String deleteWa = "DELETE from ForecastZoneWa";
+		String deleteMa3 = "DELETE from ForecastZoneMa3";
+		String deleteMa5 = "DELETE from ForecastZoneMa5";
 		String deleteUniversity = "DELETE from ForecastUniversity";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement deleteZbfStatement = conn.prepareStatement(deleteZoneBuildingFloor);
 				PreparedStatement deleteBuildingStatement = conn.prepareStatement(deleteBuilding);
-				PreparedStatement deleteZoneStatement = conn.prepareStatement(deleteZone);
+				PreparedStatement deleteZoneEs = conn.prepareStatement(deleteEs);
+				PreparedStatement deleteZoneWa = conn.prepareStatement(deleteWa);
+				PreparedStatement deleteZoneMa3 = conn.prepareStatement(deleteMa3);
+				PreparedStatement deleteZoneMa5 = conn.prepareStatement(deleteMa5);
+
 				PreparedStatement deleteUniStatement = conn.prepareStatement(deleteUniversity);) {
 
 			deleteZbfStatement.executeUpdate();
 			deleteBuildingStatement.executeUpdate();
-			deleteZoneStatement.executeUpdate();
+			deleteZoneEs.executeUpdate();
+			deleteZoneWa.executeUpdate();
+			deleteZoneMa3.executeUpdate();
 			deleteUniStatement.executeUpdate();
 
 		} catch (SQLException e) {

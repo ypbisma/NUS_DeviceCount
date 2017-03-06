@@ -18,26 +18,30 @@ public class JobForecast {
 
 	public void forecastZone() {
 		zoneList = zbfDatabaseManager.getZones();
-		ArrayList<Zone> zoneAggregate = new ArrayList<>();
-		zoneAggregate = dcDatabaseManager.getAggregateZones();
+//		ArrayList<Zone> zoneAggregate = new ArrayList<>();
 		forecaster = new DeviceCountForecaster();
-		
-		//WeightedAverageMethod
+
+		// WeightedAverageMethod
 		double[] weights = { 0.5, 0.25, 0.15, 0.1, 0.1 };
 
 		for (Zone zone : zoneList) {
-			Zone zoneToWrite = forecaster.movingAverage(zoneAggregate, 3, zone.getZoneId(), zone.getZoneName());
-			dcDatabaseManager.insertZoneForecast(zoneToWrite.getZoneId(), zoneToWrite.getZoneName(),
-					zoneToWrite.getCount(), zoneToWrite.getTime(), "ma3");
+			ArrayList<Zone> zoneAggregate = dcDatabaseManager.getAggregateZones();
+			Zone zoneMa3 = forecaster.movingAverage(zoneAggregate, 3, zone.getZoneId(), zone.getZoneName());
+			dcDatabaseManager.insertZoneForecast(zoneMa3.getZoneId(), zoneMa3.getZoneName(), zoneMa3.getCount(),
+					zoneMa3.getTime(), "ma3");
 
-			zoneToWrite = forecaster.movingAverage(zoneAggregate, 5, zone.getZoneId(), zone.getZoneName());
-			dcDatabaseManager.insertZoneForecast(zoneToWrite.getZoneId(), zoneToWrite.getZoneName(),
-					zoneToWrite.getCount(), zoneToWrite.getTime(), "ma5");
+			Zone zoneMa5 = forecaster.movingAverage(zoneAggregate, 5, zone.getZoneId(), zone.getZoneName());
+			dcDatabaseManager.insertZoneForecast(zoneMa5.getZoneId(), zoneMa5.getZoneName(),
+					zoneMa5.getCount(), zoneMa5.getTime(), "ma5");
 
+			Zone zoneWam = forecaster.weightedAverage(zoneAggregate, weights, zone.getZoneName(), zone.getZoneId());
+			dcDatabaseManager.insertZoneForecast(zoneWam.getZoneId(), zoneWam.getZoneName(),
+					zoneWam.getCount(), zoneWam.getTime(), "wam");
 
-			zoneToWrite = forecaster.weightedAverage(zoneAggregate, weights, zone.getZoneName(), zone.getZoneId());
-			dcDatabaseManager.insertZoneForecast(zoneToWrite.getZoneId(), zoneToWrite.getZoneName(),
-					zoneToWrite.getCount(), zoneToWrite.getTime(), "wam");
+			Zone zoneEs = forecaster.exponentialSmoothing(dcDatabaseManager.getForecastZones("zone"),
+					dcDatabaseManager.getAggregateZones(), 0.5, zone.getZoneId(), zone.getZoneName());
+			dcDatabaseManager.insertZoneForecast(zoneEs.getZoneId(), zoneEs.getZoneName(),
+					zoneEs.getCount(), zoneEs.getTime(), "es");
 		}
 	}
 }

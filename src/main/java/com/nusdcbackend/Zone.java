@@ -22,13 +22,7 @@ public class Zone {
 		this.zoneName = zoneName;
 		this.timeString = timeString;
 		this.count = count;
-		time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
-		try {
-			time.setTime(sdf.parse(timeString));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		time = this.stringToCalendar(timeString);
 	}
 
 	
@@ -55,5 +49,16 @@ public class Zone {
 	}
 	public void setTime(Calendar time) {
 		this.time = time;
+	}
+	
+	private Calendar stringToCalendar(String timeString) {
+		Calendar time = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		try {
+			time.setTime(sdf.parse(timeString));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
 	}
 }

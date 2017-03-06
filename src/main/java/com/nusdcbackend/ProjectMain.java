@@ -14,7 +14,7 @@ public class ProjectMain {
 
 	public static void main(String[] args) throws Exception {
 		deviceCountList = new DeviceCountDatabaseManager();
-//		deviceCountList.emptyDeviceCountDatabase();
+		deviceCountList.emptyDeviceCountDatabase();
 		deviceCountList.emptyForecastTable();
 		
 		try {
@@ -26,7 +26,7 @@ public class ProjectMain {
 
 			// Trigger the job to run now, and then repeat every 40 seconds
 			Trigger trigger1 = newTrigger().withIdentity("trigger1", "group1").startNow()
-					.withSchedule(simpleSchedule().withIntervalInSeconds(120).repeatForever()).build();
+					.withSchedule(simpleSchedule().withIntervalInSeconds(300).repeatForever()).build();
 
 			// Tell quartz to schedule the job using our trigger
 			scheduler1.scheduleJob(job1, trigger1);

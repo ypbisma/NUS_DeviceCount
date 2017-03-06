@@ -25,9 +25,8 @@ public class ScheduledJob implements org.quartz.Job {
 			loginManager.login();
 			token = loginManager.getToken();
 			System.out.println(sdf.format(cal.getTime()));
-
-//			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
-//			jobDeviceCount.execute();
+			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
+			jobDeviceCount.execute();
 			JobForecast jobForecast = new JobForecast(token);
 			jobForecast.forecastZone();
 
