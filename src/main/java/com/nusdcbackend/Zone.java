@@ -6,6 +6,11 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Zone {
+	private String zoneId;
+	private String zoneName;
+	private String count;
+	private String timeString;
+	private Calendar time;
 	
 	public Zone(String zoneId, String zoneName){
 		this.zoneId = zoneId;
@@ -25,11 +30,7 @@ public class Zone {
 			e.printStackTrace();
 		}
 	}
-	private String zoneId;
-	private String zoneName;
-	private String count;
-	private String timeString;
-	private Calendar time;
+
 	
 	public String getZoneId() {
 		return zoneId;

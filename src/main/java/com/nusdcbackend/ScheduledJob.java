@@ -26,14 +26,10 @@ public class ScheduledJob implements org.quartz.Job {
 			token = loginManager.getToken();
 			System.out.println(sdf.format(cal.getTime()));
 
-			JobForecast jobForecast = new JobForecast(token);
-			jobForecast.forecastZone();
-			
 //			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
 //			jobDeviceCount.execute();
-			
-			
-	
+			JobForecast jobForecast = new JobForecast(token);
+			jobForecast.forecastZone();
 
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());

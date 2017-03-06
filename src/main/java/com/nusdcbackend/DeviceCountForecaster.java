@@ -9,16 +9,22 @@ import java.util.Locale;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import net.sourceforge.openforecast.DataPoint;
+import net.sourceforge.openforecast.DataSet;
+import net.sourceforge.openforecast.ForecastingModel;
+import net.sourceforge.openforecast.Observation;
+import net.sourceforge.openforecast.models.WeightedMovingAverageModel;
+
 public class DeviceCountForecaster {
 
-	public Zone movingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneName, String zoneId) {
-		Zone zoneToWrite = new Zone(zoneName, zoneId);
+	public Zone movingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneId, String zoneName) {
+		Zone zoneToWrite = new Zone(zoneId, zoneName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		Calendar time = null;
 		Double average = 0.0;
-		
+
 		for (Zone zoneAggregate : inputZoneArray) {
-			if (zoneAggregate.getZoneName().equals(zoneName)){
+			if (zoneAggregate.getZoneName().equals(zoneName)) {
 				integerList.add(Integer.parseInt(zoneAggregate.getCount()));
 				time = zoneAggregate.getTime();
 			}
@@ -29,9 +35,6 @@ public class DeviceCountForecaster {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		stats.setWindowSize(step);
 
-		// Read data from an input stream,
-		// displaying the mean of the most recent 100 observations
-		// after every 100 observations
 		long nLines = 0;
 		for (int d : integerList) {
 			stats.addValue((double) d);
@@ -41,25 +44,37 @@ public class DeviceCountForecaster {
 			}
 		}
 		zoneToWrite.setCount(average.toString());
-		zoneToWrite.setTime(time);
+		zoneToWrite.setTime(this.addTenMinutes(time));
+		return zoneToWrite;
+	}
+
+	public Zone weightedAverage(ArrayList<Zone> inputZoneArray, double[] weights, String zoneName, String zoneId) {
+		Zone zoneToWrite = new Zone(zoneId, zoneName);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		Calendar time = null;
+		Double average = 0.0;
+		int n = weights.length;
+
+		for (Zone zoneAggregate : inputZoneArray) {
+			if (zoneAggregate.getZoneName().equals(zoneName)) {
+				integerList.add(Integer.parseInt(zoneAggregate.getCount()));
+				time = zoneAggregate.getTime();
+			}
+		}
+
+		for (int i = 1; i <= n; i++) {
+			average = average + (double) weights[i - 1] * integerList.get(integerList.size() - i);
+		}
+		zoneToWrite.setCount(average.toString());
+		zoneToWrite.setTime(this.addTenMinutes(time));
 		return zoneToWrite;
 	}
 	
-//	private Calendar stringToCalendar (String timeString){
-//		Calendar time = Calendar.getInstance();
-//		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
-//		try {
-//			time.setTime(sdf.parse(timeString));
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
-//		return time;
-//	}
-//	
-//	private String calendarToString (Calendar timeCalendar){
-//		String time;
-//		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-//		time = sdf.format(timeCalendar.getTime()); 
-//		return time;
-//	}
+	public Zone exponentialSmoothing(ArrayList<Zone> inputZoneArray, double[] weights, String zoneName, String zoneId) {
+
+
+	private Calendar addTenMinutes(Calendar time) {
+		time.add(Calendar.MINUTE, 10);
+		return time;
+	}
 }

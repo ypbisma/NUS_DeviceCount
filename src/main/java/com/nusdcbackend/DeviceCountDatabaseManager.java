@@ -96,22 +96,70 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	public void insertZoneForecast(String zoneId, String zoneName, String deviceCount, Calendar time) {
-		String insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, deviceCount, time)" + " VALUES(?,?,?,?)";
+
+	// FORECAST
+
+	public void insertZoneForecast(String zoneId, String zoneName, String forecast, Calendar time, String method) {
+		String insertSql = null;
+		String updateSql = null;
+		String selectSql = null;
+
+		String lastZoneId = null;
+		String lastTime = null;
+
+		boolean itemExists = false;
+		Integer row = 1;
+		Integer itemExistsRow = 0;
+
+		switch (method) {
+		case "ma3":
+			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZone set ma3 = ? where rowid = ?";
+			break;
+		case "ma5":
+			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZone set ma5 = ? where rowid = ?";
+			break;
+		case "wam":
+			insertSql = "INSERT INTO ForecastZone (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZone set wa = ? where rowid = ?";
+		default:
+		}
 
 		try (Connection conn = this.connectDeviceCountDatabase();
-				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
-			insertStatement.setString(1, zoneId);
-			insertStatement.setString(2, zoneName);
-			insertStatement.setString(3, deviceCount);
-			insertStatement.setString(4, this.calendarToString(time));
-			insertStatement.executeUpdate();
+				PreparedStatement insertStatement = conn.prepareStatement(insertSql);
+				PreparedStatement updateStatement = conn.prepareStatement(updateSql);
+				Statement statement = conn.createStatement()) {
 
+			ResultSet res = statement.executeQuery("SELECT * FROM ForecastZone");
+			while (res.next()) {
+				lastZoneId = res.getString("zoneId");
+				lastTime = res.getString("time");
+
+				if (lastZoneId.equals(zoneId) && lastTime.equals(this.calendarToString(time))) {
+					itemExists = true;
+					itemExistsRow = row;
+				}
+				row++;
+			}
+
+			if (itemExists) {
+				updateStatement.setString(1, forecast);
+				updateStatement.setString(2, itemExistsRow.toString());
+				updateStatement.executeUpdate();
+			} else {
+				insertStatement.setString(1, zoneId);
+				insertStatement.setString(2, zoneName);
+				insertStatement.setString(3, forecast);
+				insertStatement.setString(4, this.calendarToString(time));
+				insertStatement.executeUpdate();
+			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	// DATABASE GETTER
 
 	public ArrayList<Zone> getAggregateZones() {
 
@@ -128,7 +176,7 @@ public class DeviceCountDatabaseManager {
 			while (res.next()) {
 				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
 						res.getString("deviceCount"), res.getString("time"));
-				
+
 				zoneList.add(zoneItem);
 			}
 		} catch (SQLException e) {
@@ -136,6 +184,32 @@ public class DeviceCountDatabaseManager {
 		}
 		return zoneList;
 	}
+
+	public ArrayList<ForecastData> getForecastZones() {
+
+		ArrayList<ForecastData> forecastList = new ArrayList<>();
+
+		try (Connection conn = this.connectDeviceCountDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+
+			String sql = "SELECT * from ForecastZone";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
+						res.getString("deviceCount"), res.getString("time"));
+
+				zoneList.add(zoneItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return zoneList;
+	}
+
+	// EMPTY FUNCTIONS
 
 	public void emptyDeviceCountDatabase() {
 
@@ -160,7 +234,7 @@ public class DeviceCountDatabaseManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void emptyForecastTable() {
 
 		String deleteZoneBuildingFloor = "DELETE from DeviceCount";
@@ -184,9 +258,8 @@ public class DeviceCountDatabaseManager {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	private Calendar stringToCalendar (String timeString){
+
+	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
 		try {
@@ -196,12 +269,12 @@ public class DeviceCountDatabaseManager {
 		}
 		return time;
 	}
-	
-	private String calendarToString (Calendar timeCalendar){
+
+	private String calendarToString(Calendar timeCalendar) {
 		String time;
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-		time = sdf.format(timeCalendar.getTime()); 
+		time = sdf.format(timeCalendar.getTime());
 		return time;
 	}
-	
+
 }
