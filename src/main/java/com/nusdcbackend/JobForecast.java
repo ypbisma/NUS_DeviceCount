@@ -9,6 +9,7 @@ public class JobForecast {
 	private String token;
 
 	private ArrayList<Zone> zoneList = new ArrayList<Zone>();
+	private ArrayList<Building> buildingList = new ArrayList<Building>();
 
 	public JobForecast(String token) {
 		this.token = token;
@@ -18,11 +19,11 @@ public class JobForecast {
 
 	public void forecastZone() {
 		zoneList = zbfDatabaseManager.getZones();
-//		ArrayList<Zone> zoneAggregate = new ArrayList<>();
+		buildingList = zbfDatabaseManager.getBuildings();
 		forecaster = new DeviceCountForecaster();
 
 		// WeightedAverageMethod
-		double[] weights = { 0.5, 0.25, 0.15, 0.1, 0.1 };
+		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
 
 		for (Zone zone : zoneList) {
 			ArrayList<Zone> zoneAggregate = dcDatabaseManager.getAggregateZones();
@@ -42,6 +43,11 @@ public class JobForecast {
 					dcDatabaseManager.getAggregateZones(), 0.5, zone.getZoneId(), zone.getZoneName());
 			dcDatabaseManager.insertZoneForecast(zoneEs.getZoneId(), zoneEs.getZoneName(),
 					zoneEs.getCount(), zoneEs.getTime(), "es");
+		}
+		
+		for (Building building : buildingList){
+			ArrayList<Building> buildingAggregate = dcDatabaseManager.getAggregateBuilding();
+			
 		}
 	}
 }

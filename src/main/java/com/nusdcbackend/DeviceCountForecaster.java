@@ -47,7 +47,7 @@ public class DeviceCountForecaster {
 		} else {
 			average = 0.0;
 		}
-		
+
 		zoneToWrite.setCount(average.toString());
 		zoneToWrite.setTime(maTime);
 		return zoneToWrite;
@@ -96,22 +96,20 @@ public class DeviceCountForecaster {
 		}
 
 		for (ForecastData forecastItem : inputZoneForecast) {
-			iter++;
 			if (forecastItem.getLocation().equals(zoneName)) {
-				if (forecastItem.getEs() != null) {
-					forecastData.add(Double.parseDouble(forecastItem.getEs()));
-				} else {
-					forecastData.add((double) zoneData.get(iter));
-				}
-
-				esTime = forecastItem.getTime();
+				forecastData.add(Double.parseDouble(forecastItem.getEs()));
 			}
 		}
-		if (forecastData.size() >= 1 && zoneData.size() >= 1) {
+
+		if (forecastData.size() == 0) {
+			forecastData.add((double) zoneData.get(zoneData.size() - 1));
+		}
+
+		if (forecastData.size() > 1 && zoneData.size() > 1) {
 			forecast = forecastData.get(forecastData.size() - 1)
 					+ alpha * (zoneData.get(zoneData.size() - 1) - forecastData.get(forecastData.size() - 1));
 		} else {
-			forecast = 0.0;
+			forecast = forecastData.get(0);
 		}
 
 		zoneToWrite.setCount(forecast.toString());

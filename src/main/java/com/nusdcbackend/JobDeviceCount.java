@@ -28,8 +28,7 @@ public class JobDeviceCount {
 		zoneBuildingFloorDatabaseManager = new ZoneBuildingFloorDatabaseManager(token);
 	}
 
-	public void execute() throws Exception {
-		String executeTime = sdf.format(cal.getTime());
+	public void execute(String executeTime) throws Exception {
 
 		zoneBuildingFloorList = zoneBuildingFloorDatabaseManager.getZoneBuildingFloor();
 		zoneList = zoneBuildingFloorDatabaseManager.getZones();

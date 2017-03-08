@@ -167,6 +167,75 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public void insertBuildingForecast(String buildingId, String buildingName, String forecast, Calendar time, String method) {
+		String insertSql = null;
+		String updateSql = null;
+		String selectString = null;
+		String lastZoneId = null;
+		String lastTime = null;
+
+		boolean itemExists = false;
+		Integer row = 1;
+		Integer itemExistsRow = 0;
+
+		switch (method) {
+		case "ma3":
+			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneMa3 set ma3 = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneMa3";
+			break;
+		case "ma5":
+			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneMa5 set ma5 = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneMa5";
+			break;
+		case "wam":
+			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneWa set wa = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneWa";
+			break;
+		case "es":
+			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time)" + " VALUES(?,?,?,?)";
+			updateSql = "UPDATE ForecastZoneEs set es = ? where rowid = ?";
+			selectString = "SELECT * FROM ForecastZoneEs";
+			break;
+		default:
+			break;
+		}
+
+		try (Connection conn = this.connectDeviceCountDatabase();
+				PreparedStatement insertStatement = conn.prepareStatement(insertSql);
+				PreparedStatement updateStatement = conn.prepareStatement(updateSql);
+				Statement statement = conn.createStatement()) {
+
+			ResultSet res = statement.executeQuery(selectString);
+			while (res.next()) {
+				lastZoneId = res.getString("zoneId");
+				lastTime = res.getString("time");
+
+				if (lastZoneId.equals(buildingId) && lastTime.equals(this.calendarToString(time))) {
+					itemExists = true;
+					itemExistsRow = row;
+				}
+				row++;
+			}
+
+			if (itemExists) {
+				updateStatement.setString(1, forecast);
+				updateStatement.setString(2, itemExistsRow.toString());
+				updateStatement.executeUpdate();
+			} else {
+				insertStatement.setString(1, buildingId);
+				insertStatement.setString(2, buildingName);
+				insertStatement.setString(3, forecast);
+				insertStatement.setString(4, this.calendarToString(time));
+				insertStatement.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 	// DATABASE GETTER
 
@@ -191,6 +260,29 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 		return zoneList;
+	}
+	
+	public ArrayList<Building> getAggregateBuilding() {
+
+		ArrayList<Building> buildingList = new ArrayList<>();
+
+		try (Connection conn = this.connectDeviceCountDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+
+			String sql = "SELECT * from AggregateBuilding";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+
+			while (res.next()) {
+				Building buildingItem = new Building(res.getString("buildingId"), res.getString("buildingName"),
+						res.getString("deviceCount"), res.getString("time"));
+				buildingList.add(buildingItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return buildingList;
 	}
 
 	public ArrayList<ForecastData> getForecastZones(String type) {
@@ -248,7 +340,6 @@ public class DeviceCountDatabaseManager {
 
 	public void emptyForecastTable() {
 
-		String deleteZoneBuildingFloor = "DELETE from DeviceCount";
 		String deleteBuilding = "DELETE from ForecastBuilding";
 		String deleteEs = "DELETE from ForecastZoneEs";
 		String deleteWa = "DELETE from ForecastZoneWa";
@@ -257,7 +348,6 @@ public class DeviceCountDatabaseManager {
 		String deleteUniversity = "DELETE from ForecastUniversity";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
-				PreparedStatement deleteZbfStatement = conn.prepareStatement(deleteZoneBuildingFloor);
 				PreparedStatement deleteBuildingStatement = conn.prepareStatement(deleteBuilding);
 				PreparedStatement deleteZoneEs = conn.prepareStatement(deleteEs);
 				PreparedStatement deleteZoneWa = conn.prepareStatement(deleteWa);
@@ -266,11 +356,11 @@ public class DeviceCountDatabaseManager {
 
 				PreparedStatement deleteUniStatement = conn.prepareStatement(deleteUniversity);) {
 
-			deleteZbfStatement.executeUpdate();
 			deleteBuildingStatement.executeUpdate();
 			deleteZoneEs.executeUpdate();
 			deleteZoneWa.executeUpdate();
 			deleteZoneMa3.executeUpdate();
+			deleteZoneMa5.executeUpdate();
 			deleteUniStatement.executeUpdate();
 
 		} catch (SQLException e) {

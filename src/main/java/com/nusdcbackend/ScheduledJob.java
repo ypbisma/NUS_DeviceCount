@@ -13,6 +13,7 @@ public class ScheduledJob implements org.quartz.Job {
 	String token;
 	private Calendar cal = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	private static String executeTime;
 
 	public ScheduledJob() {
 	}
@@ -24,9 +25,11 @@ public class ScheduledJob implements org.quartz.Job {
 			LoginManager loginManager = new LoginManager();
 			loginManager.login();
 			token = loginManager.getToken();
-			System.out.println(sdf.format(cal.getTime()));
+			executeTime = sdf.format(cal.getTime());
+			System.out.println(executeTime);
+
 			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
-			jobDeviceCount.execute();
+			jobDeviceCount.execute(executeTime);
 			JobForecast jobForecast = new JobForecast(token);
 			jobForecast.forecastZone();
 
