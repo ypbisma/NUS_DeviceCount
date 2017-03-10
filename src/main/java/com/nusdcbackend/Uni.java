@@ -5,52 +5,42 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Zone {
-	private String zoneId;
-	private String zoneName;
+public class Uni {
+	private String uniId;
+	private String uniName;
 	private String count;
 	private String calendar;
 	private Calendar time;
-	
-	public Zone(String zoneId, String zoneName){
-		this.zoneId = zoneId;
-		this.zoneName = zoneName;
+
+	public Uni(String uniId, String uniName) {
+		this.setUniId(uniId);
+		this.setUniName(uniName);
 	}
-	
-	public Zone(String zoneId, String zoneName, String count, String timeString, String dateString){
-		this.zoneId = zoneId;
-		this.zoneName = zoneName;
+
+	public Uni(String uniId, String uniName, String count, String timeString, String dateString) {
+		this.setUniId(uniId);
+		this.setUniName(uniName);
 		this.count = count;
 		this.calendar = dateString + " " + timeString;
 		time = this.stringToCalendar(calendar);
 	}
 
-	
-	public String getZoneId() {
-		return zoneId;
-	}
-	public void setZoneId(String zoneId) {
-		this.zoneId = zoneId;
-	}
-	public String getZoneName() {
-		return zoneName;
-	}
-	public void setZoneName(String zoneName) {
-		this.zoneName = zoneName;
-	}
 	public String getCount() {
 		return count;
 	}
+
 	public void setCount(String count) {
 		this.count = count;
 	}
+
 	public Calendar getTime() {
 		return time;
 	}
+
 	public void setTime(Calendar time) {
 		this.time = time;
 	}
-	
+
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.ENGLISH);
@@ -60,5 +50,21 @@ public class Zone {
 			e.printStackTrace();
 		}
 		return time;
+	}
+
+	public String getUniId() {
+		return uniId;
+	}
+
+	public void setUniId(String uniId) {
+		this.uniId = uniId;
+	}
+
+	public String getUniName() {
+		return uniName;
+	}
+
+	public void setUniName(String uniName) {
+		this.uniName = uniName;
 	}
 }

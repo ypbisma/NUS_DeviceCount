@@ -49,7 +49,6 @@ public class JobForecast {
 		// WeightedAverageMethod
 		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
 
-
 		for (Building building : buildingList) {
 			ArrayList<Building> buildingAggregate = dcDatabaseManager.getAggregateBuilding();
 			Building buildingMa3 = forecaster.buildingMovingAverage(buildingAggregate, 3, building.getBuildingId(),
@@ -61,7 +60,32 @@ public class JobForecast {
 					building.getBuildingName());
 			dcDatabaseManager.insertBuildingForecast(buildingMa5.getBuildingId(), buildingMa5.getBuildingName(),
 					buildingMa5.getCount(), buildingMa5.getTime(), "ma5");
-			
+
+			Building buildingWam = forecaster.buildingWeightedAverage(buildingAggregate, weights,
+					building.getBuildingName(), building.getBuildingId());
+			dcDatabaseManager.insertBuildingForecast(buildingWam.getBuildingId(), buildingWam.getBuildingName(),
+					buildingWam.getCount(), buildingWam.getTime(), "wam");
+
 		}
+	}
+
+	public void forecastUni() {
+		forecaster = new DeviceCountForecaster();
+		// WeightedAverageMethod
+		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
+
+		ArrayList<Uni> uniAggregate = dcDatabaseManager.getAggregateUni();
+		Uni uniMa3 = forecaster.uniMovingAverage(uniAggregate, 3, "1", "NUS");
+		dcDatabaseManager.insertUniForecast(uniMa3.getUniId(), uniMa3.getUniName(), uniMa3.getCount(), uniMa3.getTime(),
+				"ma3");
+		
+		Uni uniMa5 = forecaster.uniMovingAverage(uniAggregate, 5, "1", "NUS");
+		dcDatabaseManager.insertUniForecast(uniMa5.getUniId(), uniMa5.getUniName(), uniMa5.getCount(), uniMa5.getTime(),
+				"ma5");
+		
+		Uni uniWa = forecaster.uniWeightedAverage(uniAggregate, weights, "NUS", "1");
+		dcDatabaseManager.insertUniForecast(uniWa.getUniId(), uniWa.getUniName(), uniWa.getCount(), uniWa.getTime(),
+				"wam");
+
 	}
 }

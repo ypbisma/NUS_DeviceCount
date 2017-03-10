@@ -27,6 +27,7 @@ public class ScheduledJob implements org.quartz.Job {
 			JobForecast jobForecast = new JobForecast(token);
 			jobForecast.forecastZone();
 			jobForecast.forecastBuilding();
+			jobForecast.forecastUni();
 
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());

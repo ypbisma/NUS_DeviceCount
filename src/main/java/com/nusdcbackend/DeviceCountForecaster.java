@@ -172,4 +172,66 @@ public class DeviceCountForecaster {
 		return buildingToWrite;
 	}
 	
+	//UNIFORECASTER
+	public Uni uniMovingAverage(ArrayList<Uni> inputUniArray, int step, String uniId, String uniName) {
+		Uni uniToWrite = new Uni(uniId, uniName);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		Calendar maTime = null;
+		Double average = 0.0;
+
+		for (Uni uniAggregate : inputUniArray) {
+			if (uniAggregate.getUniName().equals(uniName)) {
+				integerList.add(Integer.parseInt(uniAggregate.getCount()));
+				maTime = uniAggregate.getTime();
+			}
+		}
+
+		HashMap<String, Double> buildingForecastKey = new HashMap<String, Double>();
+
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		stats.setWindowSize(step);
+
+		if (integerList.size() >= step) {
+			long nLines = 0;
+			for (int d : integerList) {
+				stats.addValue((double) d);
+				nLines++;
+				if (nLines >= step) {
+					average = stats.getMean();
+				}
+			}
+		} else {
+			average = 0.0;
+		}
+
+		uniToWrite.setCount(average.toString());
+		uniToWrite.setTime(maTime);
+		return uniToWrite;
+	}
+	
+	public Uni uniWeightedAverage(ArrayList<Uni> inputUniArray, double[] weights, String uniName, String uniId) {
+		Uni uniToWrite = new Uni(uniId, uniName);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		Calendar waTime = null;
+		Double average = 0.0;
+		int n = weights.length;
+
+		for (Uni uniAggregate : inputUniArray) {
+			if (uniAggregate.getUniName().equals(uniName)) {
+				integerList.add(Integer.parseInt(uniAggregate.getCount()));
+				waTime = uniAggregate.getTime();
+			}
+		}
+		if (integerList.size() >= n) {
+			for (int i = 1; i <= n; i++) {
+				average = average + (double) weights[i - 1] * integerList.get(integerList.size() - i);
+			}
+		} else {
+			average = 0.0;
+		}
+		uniToWrite.setCount(average.toString());
+		uniToWrite.setTime(waTime);
+
+		return uniToWrite;
+	}
 }

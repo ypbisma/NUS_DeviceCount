@@ -372,6 +372,28 @@ public class DeviceCountDatabaseManager {
 		}
 		return buildingList;
 	}
+	
+	public ArrayList<Uni> getAggregateUni() {
+
+		ArrayList<Uni> uniList = new ArrayList<>();
+
+		try (Connection conn = this.connectDeviceCountDatabase();) {
+			Statement stmt;
+			stmt = conn.createStatement();
+
+			String sql = "SELECT * from AggregateUniversity";
+			ResultSet res;
+			res = stmt.executeQuery(sql);
+			while (res.next()) {
+				Uni uniItem = new Uni(res.getString("uniId"), res.getString("uniName"),
+						res.getString("deviceCount"), res.getString("time"), res.getString("date"));
+				uniList.add(uniItem);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return uniList;
+	}
 
 	public ArrayList<ForecastData> getForecastZones(String type) {
 
