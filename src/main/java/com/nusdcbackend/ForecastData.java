@@ -11,17 +11,17 @@ public class ForecastData {
 	private String locationType = null;
 	private String es = null;
 	private Calendar time;
-	private String date;
+	private String calendar;
 
 
-	public ForecastData(String locationType, String id, String location, String es, String time, String date) {
+	public ForecastData(String locationType, String id, String location, String es, String timeString, String dateString) {
 		this.locationType = locationType;
 		this.id = id;
 		this.location = location;
-
 		this.es = es;
-		this.time = this.stringToCalendar(time);
-		this.date = date;
+
+		this.calendar = dateString + " " + timeString;
+		time = this.stringToCalendar(calendar);
 	}
 
 	public String getId() {
@@ -65,7 +65,7 @@ public class ForecastData {
 
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy HH:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {

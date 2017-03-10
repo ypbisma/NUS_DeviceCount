@@ -112,6 +112,7 @@ public class DeviceCountDatabaseManager {
 		String selectString = null;
 		String lastZoneId = null;
 		String lastTime = null;
+		String lastDate = null;
 
 		boolean itemExists = false;
 		Integer row = 1;
@@ -151,8 +152,9 @@ public class DeviceCountDatabaseManager {
 			while (res.next()) {
 				lastZoneId = res.getString("zoneId");
 				lastTime = res.getString("time");
+				lastDate = res.getString("date");
 
-				if (lastZoneId.equals(zoneId) && lastTime.equals(this.getTime(cal))) {
+				if (lastZoneId.equals(zoneId) && lastTime.equals(this.getTime(cal))&& lastDate.equals(this.getDate(cal))) {
 					itemExists = true;
 					itemExistsRow = row;
 				}
@@ -378,16 +380,6 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
-	private Calendar stringToCalendar(String timeString) {
-		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
-		try {
-			time.setTime(sdf.parse(timeString));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return time;
-	}
 
 	private String getTime(Calendar cal) {
 		String time;
