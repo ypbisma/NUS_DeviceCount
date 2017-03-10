@@ -11,9 +11,8 @@ public class Building {
 	private String buildingName;
 	private String zoneId;
 	private String count;
-	private String timeString;
+	private String calendar;
 	private Calendar time;
-	private String dateString;
 	
 	public Building(String buildingId, String buildingName, String zoneId){
 		this.buildingId = buildingId;
@@ -21,13 +20,17 @@ public class Building {
 		this.zoneId = zoneId;
 	}
 	
+	public Building(String buildingId, String buildingName){
+		this.buildingId = buildingId;
+		this.buildingName = buildingName;
+	}
+	
 	public Building(String buildingId, String buildingName, String count, String timeString, String dateString){
 		this.buildingId = buildingId;
 		this.buildingName = buildingName;
-		this.timeString = timeString;
 		this.count = count;
-		time = this.stringToCalendar(timeString);
-		this.dateString = dateString;
+		this.calendar = dateString + " " + timeString;
+		setTime(this.stringToCalendar(calendar));
 	}
 	
 	public String getBuildingId() {
@@ -57,12 +60,20 @@ public class Building {
 	
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return time;
+	}
+
+	public Calendar getTime() {
+		return time;
+	}
+
+	public void setTime(Calendar time) {
+		this.time = time;
 	}
 }

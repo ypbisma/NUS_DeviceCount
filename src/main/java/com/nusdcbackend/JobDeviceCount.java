@@ -29,7 +29,7 @@ public class JobDeviceCount {
 	}
 
 	public void execute(Calendar executeTime) throws Exception {
-		System.out.println(executeTime.get(Calendar.DATE) + "-" + executeTime.get(Calendar.MONTH) + "-"
+		System.out.println(executeTime.get(Calendar.DATE) + "-" + (1+executeTime.get(Calendar.MONTH)) + "-"
 				+ executeTime.get(Calendar.YEAR) + " " + executeTime.get(Calendar.HOUR_OF_DAY) + ":"
 				+ executeTime.get(Calendar.MINUTE) + ":" + executeTime.get(Calendar.SECOND));
 

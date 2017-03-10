@@ -1,23 +1,15 @@
 package com.nusdcbackend;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import net.sourceforge.openforecast.DataPoint;
-import net.sourceforge.openforecast.DataSet;
-import net.sourceforge.openforecast.ForecastingModel;
-import net.sourceforge.openforecast.Observation;
-import net.sourceforge.openforecast.models.WeightedMovingAverageModel;
-
 public class DeviceCountForecaster {
 
-	public Zone movingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneId, String zoneName) {
+	//ZONEFORECASTER
+	public Zone zoneMovingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneId, String zoneName) {
 		Zone zoneToWrite = new Zone(zoneId, zoneName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		Calendar maTime = null;
@@ -53,7 +45,7 @@ public class DeviceCountForecaster {
 		return zoneToWrite;
 	}
 
-	public Zone weightedAverage(ArrayList<Zone> inputZoneArray, double[] weights, String zoneName, String zoneId) {
+	public Zone zoneWeightedAverage(ArrayList<Zone> inputZoneArray, double[] weights, String zoneName, String zoneId) {
 		Zone zoneToWrite = new Zone(zoneId, zoneName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		Calendar waTime = null;
@@ -79,7 +71,7 @@ public class DeviceCountForecaster {
 		return zoneToWrite;
 	}
 
-	public Zone exponentialSmoothing(ArrayList<ForecastData> inputZoneForecast, ArrayList<Zone> inputZoneCount,
+	public Zone zoneExponentialSmoothing(ArrayList<ForecastData> inputZoneForecast, ArrayList<Zone> inputZoneCount,
 			double alpha, String zoneId, String zoneName) {
 		Zone zoneToWrite = new Zone(zoneId, zoneName);
 		Calendar esTime = null;
@@ -116,4 +108,68 @@ public class DeviceCountForecaster {
 		zoneToWrite.setTime(esTime);
 		return zoneToWrite;
 	}
+	
+	//BUILDINGFORECASTER
+	public Building buildingMovingAverage(ArrayList<Building> inputBuildingArray, int step, String buildingId, String buildingName) {
+		Building buildingToWrite = new Building(buildingId, buildingName);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		Calendar maTime = null;
+		Double average = 0.0;
+
+		for (Building buildingAggregate : inputBuildingArray) {
+			if (buildingAggregate.getBuildingName().equals(buildingName)) {
+				integerList.add(Integer.parseInt(buildingAggregate.getCount()));
+				maTime = buildingAggregate.getTime();
+			}
+		}
+
+		HashMap<String, Double> buildingForecastKey = new HashMap<String, Double>();
+
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		stats.setWindowSize(step);
+
+		if (integerList.size() >= step) {
+			long nLines = 0;
+			for (int d : integerList) {
+				stats.addValue((double) d);
+				nLines++;
+				if (nLines >= step) {
+					average = stats.getMean();
+				}
+			}
+		} else {
+			average = 0.0;
+		}
+
+		buildingToWrite.setCount(average.toString());
+		buildingToWrite.setTime(maTime);
+		return buildingToWrite;
+	}
+	
+	public Building buildingWeightedAverage(ArrayList<Building> inputBuildingArray, double[] weights, String buildingName, String buildingId) {
+		Building buildingToWrite = new Building(buildingId, buildingName);
+		ArrayList<Integer> integerList = new ArrayList<Integer>();
+		Calendar waTime = null;
+		Double average = 0.0;
+		int n = weights.length;
+
+		for (Building buildingAggregate : inputBuildingArray) {
+			if (buildingAggregate.getBuildingName().equals(buildingName)) {
+				integerList.add(Integer.parseInt(buildingAggregate.getCount()));
+				waTime = buildingAggregate.getTime();
+			}
+		}
+		if (integerList.size() >= n) {
+			for (int i = 1; i <= n; i++) {
+				average = average + (double) weights[i - 1] * integerList.get(integerList.size() - i);
+			}
+		} else {
+			average = 0.0;
+		}
+		buildingToWrite.setCount(average.toString());
+		buildingToWrite.setTime(waTime);
+
+		return buildingToWrite;
+	}
+	
 }

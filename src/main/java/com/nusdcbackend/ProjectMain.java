@@ -14,7 +14,7 @@ public class ProjectMain {
 
 	public static void main(String[] args) throws Exception {
 		deviceCountList = new DeviceCountDatabaseManager();
-		deviceCountList.emptyDeviceCountDatabase();
+//		deviceCountList.emptyDeviceCountDatabase();
 		deviceCountList.emptyForecastTable();
 		
 		try {
