@@ -9,7 +9,7 @@ public class Zone {
 	private String zoneId;
 	private String zoneName;
 	private String count;
-	private String timeString;
+	private String calendar;
 	private Calendar time;
 	
 	public Zone(String zoneId, String zoneName){
@@ -17,12 +17,12 @@ public class Zone {
 		this.zoneName = zoneName;
 	}
 	
-	public Zone(String zoneId, String zoneName, String count, String timeString){
+	public Zone(String zoneId, String zoneName, String count, String timeString, String dateString){
 		this.zoneId = zoneId;
 		this.zoneName = zoneName;
-		this.timeString = timeString;
 		this.count = count;
-		time = this.stringToCalendar(timeString);
+		this.calendar = dateString + " " + timeString;
+		time = this.stringToCalendar(calendar);
 	}
 
 	
@@ -53,7 +53,7 @@ public class Zone {
 	
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {

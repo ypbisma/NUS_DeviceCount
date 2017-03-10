@@ -11,20 +11,22 @@ public class ForecastData {
 	private String locationType = null;
 	private String es = null;
 	private Calendar time;
+	private String date;
 
-	public String getId() {
-		return id;
-	}
 
-	public ForecastData(String locationType, String id, String location, String es, String time) {
+	public ForecastData(String locationType, String id, String location, String es, String time, String date) {
 		this.locationType = locationType;
 		this.id = id;
 		this.location = location;
 
 		this.es = es;
 		this.time = this.stringToCalendar(time);
+		this.date = date;
 	}
 
+	public String getId() {
+		return id;
+	}
 	public void setId(String id) {
 		this.id = id;
 	}

@@ -28,7 +28,10 @@ public class JobDeviceCount {
 		zoneBuildingFloorDatabaseManager = new ZoneBuildingFloorDatabaseManager(token);
 	}
 
-	public void execute(String executeTime) throws Exception {
+	public void execute(Calendar executeTime) throws Exception {
+		System.out.println(executeTime.get(Calendar.DATE) + "-" + executeTime.get(Calendar.MONTH) + "-"
+				+ executeTime.get(Calendar.YEAR) + " " + executeTime.get(Calendar.HOUR_OF_DAY) + ":"
+				+ executeTime.get(Calendar.MINUTE) + ":" + executeTime.get(Calendar.SECOND));
 
 		zoneBuildingFloorList = zoneBuildingFloorDatabaseManager.getZoneBuildingFloor();
 		zoneList = zoneBuildingFloorDatabaseManager.getZones();
@@ -47,7 +50,8 @@ public class JobDeviceCount {
 			item.setCount(deviceCountManager.getDeviceCount().getCount().toString());
 
 			if (buildingMap.containsKey(item.getBuilding())) {
-				Integer newBuildingSum = Integer.parseInt(buildingMap.get(item.getBuilding())) + Integer.parseInt(item.getCount());
+				Integer newBuildingSum = Integer.parseInt(buildingMap.get(item.getBuilding()))
+						+ Integer.parseInt(item.getCount());
 				buildingMap.put(item.getBuilding(), newBuildingSum.toString());
 			} else {
 				buildingMap.put(item.getBuilding(), item.getCount());
@@ -61,7 +65,6 @@ public class JobDeviceCount {
 			}
 
 			uniSum = uniSum + Integer.parseInt(item.getCount());
-			
 
 		}
 

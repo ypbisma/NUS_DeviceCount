@@ -26,8 +26,9 @@ public class DeviceCountDatabaseManager {
 		return conn;
 	}
 
-	public void insertDeviceCount(String zone, String building, String floor, String deviceCount, String time) {
-		String insertSql = "INSERT INTO DeviceCount (zone, building, floor, count, time)" + " VALUES(?,?,?,?,?)";
+	public void insertDeviceCount(String zone, String building, String floor, String deviceCount, Calendar cal) {
+		String insertSql = "INSERT INTO DeviceCount (zone, building, floor, count, time, date)"
+				+ " VALUES(?,?,?,?,?,?)";
 		String updateSql = "UPDATE DeviceCount set count = ? WHERE floor = ?";
 		String selectSql = "Select count(*) from DeviceCount WHERE floor = ?";
 
@@ -40,7 +41,8 @@ public class DeviceCountDatabaseManager {
 			insertStatement.setString(2, building);
 			insertStatement.setString(3, floor);
 			insertStatement.setString(4, deviceCount);
-			insertStatement.setString(5, time);
+			insertStatement.setString(5, this.getTime(cal));
+			insertStatement.setString(6, this.getDate(cal));
 			insertStatement.executeUpdate();
 			// }
 		} catch (SQLException e) {
@@ -48,16 +50,17 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
-	public void insertBuildingAggregate(String buildingId, String buildingName, String deviceCount, String time) {
-		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time)"
-				+ " VALUES(?,?,?,?)";
+	public void insertBuildingAggregate(String buildingId, String buildingName, String deviceCount, Calendar cal) {
+		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time, date)"
+				+ " VALUES(?,?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
 			insertStatement.setString(1, buildingId);
 			insertStatement.setString(2, buildingName);
 			insertStatement.setString(3, deviceCount);
-			insertStatement.setString(4, time);
+			insertStatement.setString(4, this.getTime(cal));
+			insertStatement.setString(5, this.getDate(cal));
 			insertStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -65,15 +68,17 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
-	public void insertZoneAggregate(String zoneId, String zoneName, String deviceCount, String time) {
-		String insertSql = "INSERT INTO AggregateZone (zoneId, zoneName, deviceCount, time)" + " VALUES(?,?,?,?)";
+	public void insertZoneAggregate(String zoneId, String zoneName, String deviceCount, Calendar cal) {
+		String insertSql = "INSERT INTO AggregateZone (zoneId, zoneName, deviceCount, time, date)"
+				+ " VALUES(?,?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
 			insertStatement.setString(1, zoneId);
 			insertStatement.setString(2, zoneName);
 			insertStatement.setString(3, deviceCount);
-			insertStatement.setString(4, time);
+			insertStatement.setString(4, this.getTime(cal));
+			insertStatement.setString(5, this.getDate(cal));
 			insertStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -81,15 +86,17 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
-	public void insertUniAggregate(String uniId, String uniName, String deviceCount, String time) {
-		String insertSql = "INSERT INTO AggregateUniversity (uniId, uniName, deviceCount, time)" + " VALUES(?,?,?,?)";
+	public void insertUniAggregate(String uniId, String uniName, String deviceCount, Calendar cal) {
+		String insertSql = "INSERT INTO AggregateUniversity (uniId, uniName, deviceCount, time, date)"
+				+ " VALUES(?,?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
 			insertStatement.setString(1, uniId);
 			insertStatement.setString(2, uniName);
 			insertStatement.setString(3, deviceCount);
-			insertStatement.setString(4, time);
+			insertStatement.setString(4, this.getTime(cal));
+			insertStatement.setString(5, this.getDate(cal));
 			insertStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -99,7 +106,7 @@ public class DeviceCountDatabaseManager {
 
 	// FORECAST
 
-	public void insertZoneForecast(String zoneId, String zoneName, String forecast, Calendar time, String method) {
+	public void insertZoneForecast(String zoneId, String zoneName, String forecast, Calendar cal, String method) {
 		String insertSql = null;
 		String updateSql = null;
 		String selectString = null;
@@ -112,22 +119,22 @@ public class DeviceCountDatabaseManager {
 
 		switch (method) {
 		case "ma3":
-			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneMa3 set ma3 = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneMa3";
 			break;
 		case "ma5":
-			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneMa5 set ma5 = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneMa5";
 			break;
 		case "wam":
-			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneWa set wa = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneWa";
 			break;
 		case "es":
-			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneEs set es = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneEs";
 			break;
@@ -145,7 +152,7 @@ public class DeviceCountDatabaseManager {
 				lastZoneId = res.getString("zoneId");
 				lastTime = res.getString("time");
 
-				if (lastZoneId.equals(zoneId) && lastTime.equals(this.calendarToString(time))) {
+				if (lastZoneId.equals(zoneId) && lastTime.equals(this.getTime(cal))) {
 					itemExists = true;
 					itemExistsRow = row;
 				}
@@ -160,15 +167,17 @@ public class DeviceCountDatabaseManager {
 				insertStatement.setString(1, zoneId);
 				insertStatement.setString(2, zoneName);
 				insertStatement.setString(3, forecast);
-				insertStatement.setString(4, this.calendarToString(time));
+				insertStatement.setString(4, this.getTime(cal));
+				insertStatement.setString(5, this.getDate(cal));
 				insertStatement.executeUpdate();
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	public void insertBuildingForecast(String buildingId, String buildingName, String forecast, Calendar time, String method) {
+
+	public void insertBuildingForecast(String buildingId, String buildingName, String forecast, Calendar cal,
+			String method) {
 		String insertSql = null;
 		String updateSql = null;
 		String selectString = null;
@@ -181,22 +190,22 @@ public class DeviceCountDatabaseManager {
 
 		switch (method) {
 		case "ma3":
-			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneMa3 set ma3 = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneMa3";
 			break;
 		case "ma5":
-			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneMa5 (zoneId, zoneName, ma5, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneMa5 set ma5 = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneMa5";
 			break;
 		case "wam":
-			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneWa (zoneId, zoneName, wa, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneWa set wa = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneWa";
 			break;
 		case "es":
-			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time)" + " VALUES(?,?,?,?)";
+			insertSql = "INSERT INTO ForecastZoneEs (zoneId, zoneName, es, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneEs set es = ? where rowid = ?";
 			selectString = "SELECT * FROM ForecastZoneEs";
 			break;
@@ -214,7 +223,7 @@ public class DeviceCountDatabaseManager {
 				lastZoneId = res.getString("zoneId");
 				lastTime = res.getString("time");
 
-				if (lastZoneId.equals(buildingId) && lastTime.equals(this.calendarToString(time))) {
+				if (lastZoneId.equals(buildingId) && lastTime.equals(this.getTime(cal))) {
 					itemExists = true;
 					itemExistsRow = row;
 				}
@@ -229,7 +238,7 @@ public class DeviceCountDatabaseManager {
 				insertStatement.setString(1, buildingId);
 				insertStatement.setString(2, buildingName);
 				insertStatement.setString(3, forecast);
-				insertStatement.setString(4, this.calendarToString(time));
+				insertStatement.setString(4, this.getTime(cal));
 				insertStatement.executeUpdate();
 			}
 		} catch (SQLException e) {
@@ -253,7 +262,7 @@ public class DeviceCountDatabaseManager {
 
 			while (res.next()) {
 				Zone zoneItem = new Zone(res.getString("zoneId"), res.getString("zoneName"),
-						res.getString("deviceCount"), res.getString("time"));
+						res.getString("deviceCount"), res.getString("time"), res.getString("date"));
 				zoneList.add(zoneItem);
 			}
 		} catch (SQLException e) {
@@ -261,7 +270,7 @@ public class DeviceCountDatabaseManager {
 		}
 		return zoneList;
 	}
-	
+
 	public ArrayList<Building> getAggregateBuilding() {
 
 		ArrayList<Building> buildingList = new ArrayList<>();
@@ -276,7 +285,7 @@ public class DeviceCountDatabaseManager {
 
 			while (res.next()) {
 				Building buildingItem = new Building(res.getString("buildingId"), res.getString("buildingName"),
-						res.getString("deviceCount"), res.getString("time"));
+						res.getString("deviceCount"), res.getString("time"), res.getString("date"));
 				buildingList.add(buildingItem);
 			}
 		} catch (SQLException e) {
@@ -302,7 +311,7 @@ public class DeviceCountDatabaseManager {
 
 			while (res.next()) {
 				ForecastData forecastItem = new ForecastData(type, res.getString(typeId), res.getString(typeName),
-						res.getString("es"), res.getString("time"));
+						res.getString("es"), res.getString("time"), res.getString("date"));
 
 				forecastList.add(forecastItem);
 			}
@@ -371,7 +380,7 @@ public class DeviceCountDatabaseManager {
 
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {
@@ -380,11 +389,17 @@ public class DeviceCountDatabaseManager {
 		return time;
 	}
 
-	private String calendarToString(Calendar timeCalendar) {
+	private String getTime(Calendar cal) {
 		String time;
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-		time = sdf.format(timeCalendar.getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		time = sdf.format(cal.getTime());
 		return time;
 	}
 
+	private String getDate(Calendar cal) {
+		String date = "" + cal.get(Calendar.DATE);
+		String month = "" + (cal.get(Calendar.MONTH)+1);
+		String year = "" + cal.get(Calendar.YEAR);
+		return date + "-" + month + "-" + year;
+	}
 }

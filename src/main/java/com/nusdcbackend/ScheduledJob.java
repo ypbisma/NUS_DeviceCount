@@ -11,10 +11,7 @@ import com.nusdcbackend.LoginManager;
 
 public class ScheduledJob implements org.quartz.Job {
 	String token;
-	private Calendar cal = Calendar.getInstance();
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-	private static String executeTime;
-
+	private Calendar executeTime = Calendar.getInstance();
 	public ScheduledJob() {
 	}
 
@@ -25,8 +22,6 @@ public class ScheduledJob implements org.quartz.Job {
 			LoginManager loginManager = new LoginManager();
 			loginManager.login();
 			token = loginManager.getToken();
-			executeTime = sdf.format(cal.getTime());
-			System.out.println(executeTime);
 
 			JobDeviceCount jobDeviceCount = new JobDeviceCount(token);
 			jobDeviceCount.execute(executeTime);

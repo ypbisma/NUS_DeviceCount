@@ -13,6 +13,7 @@ public class Building {
 	private String count;
 	private String timeString;
 	private Calendar time;
+	private String dateString;
 	
 	public Building(String buildingId, String buildingName, String zoneId){
 		this.buildingId = buildingId;
@@ -20,12 +21,13 @@ public class Building {
 		this.zoneId = zoneId;
 	}
 	
-	public Building(String buildingId, String buildingName, String count, String timeString){
+	public Building(String buildingId, String buildingName, String count, String timeString, String dateString){
 		this.buildingId = buildingId;
 		this.buildingName = buildingName;
 		this.timeString = timeString;
 		this.count = count;
 		time = this.stringToCalendar(timeString);
+		this.dateString = dateString;
 	}
 	
 	public String getBuildingId() {
