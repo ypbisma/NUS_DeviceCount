@@ -11,10 +11,17 @@ import static org.quartz.SimpleScheduleBuilder.*;
 
 public class ProjectMain {
 	private static DeviceCountDatabaseManager deviceCountList;
-
+	private static ZoneBuildingFloorDatabaseManager zbfManager;
+	private static LoginManager loginManager = new LoginManager();
+	private static String token;
+	
 	public static void main(String[] args) throws Exception {
+//		loginManager.login();
+//		token = loginManager.getToken();
+//		zbfManager = new ZoneBuildingFloorDatabaseManager (token);
+//		zbfManager.writeZoneBuildingFloor();
 		deviceCountList = new DeviceCountDatabaseManager();
-//		deviceCountList.emptyDeviceCountDatabase();
+		deviceCountList.emptyDeviceCountDatabase();
 		deviceCountList.emptyForecastTable();
 		
 		try {

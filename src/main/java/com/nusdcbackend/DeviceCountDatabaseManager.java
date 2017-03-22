@@ -24,23 +24,18 @@ public class DeviceCountDatabaseManager {
 		return conn;
 	}
 
-	public void insertDeviceCount(String zone, String building, String floor, String deviceCount, Calendar cal) {
-		String insertSql = "INSERT INTO DeviceCount (zone, building, floor, count, time, date)"
-				+ " VALUES(?,?,?,?,?,?)";
-		String updateSql = "UPDATE DeviceCount set count = ? WHERE floor = ?";
-		String selectSql = "Select count(*) from DeviceCount WHERE floor = ?";
+	public void insertFloorAggregate(String floorId, String floorName, String deviceCount, Calendar cal) {
+		String insertSql = "INSERT INTO AggregateFloor (floorId, floorName, deviceCount, time, date)"
+				+ " VALUES(?,?,?,?,?)";
 
 		try (Connection conn = this.connectDeviceCountDatabase();
-				PreparedStatement updateStatement = conn.prepareStatement(updateSql);
-				PreparedStatement selectStatement = conn.prepareStatement(selectSql);
 				PreparedStatement insertStatement = conn.prepareStatement(insertSql);) {
 
-			insertStatement.setString(1, zone);
-			insertStatement.setString(2, building);
-			insertStatement.setString(3, floor);
-			insertStatement.setString(4, deviceCount);
-			insertStatement.setString(5, this.getTime(cal));
-			insertStatement.setString(6, this.getDate(cal));
+			insertStatement.setString(1, floorId);
+			insertStatement.setString(2, floorName);
+			insertStatement.setString(3, deviceCount);
+			insertStatement.setString(4, this.getTime(cal));
+			insertStatement.setString(5, this.getDate(cal));
 			insertStatement.executeUpdate();
 			// }
 		} catch (SQLException e) {
@@ -480,7 +475,7 @@ public class DeviceCountDatabaseManager {
 
 	public void emptyDeviceCountDatabase() {
 
-		String deleteZoneBuildingFloor = "DELETE from DeviceCount";
+		String deleteZoneBuildingFloor = "DELETE from AggregateFloor";
 		String deleteBuilding = "DELETE from AggregateBuilding";
 		String deleteZone = "DELETE from AggregateZone";
 		String deleteUniversity = "DELETE from AggregateUniversity";
@@ -559,7 +554,7 @@ public class DeviceCountDatabaseManager {
 
 	private String getTime(Calendar cal) {
 		String time;
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 		time = sdf.format(cal.getTime());
 		return time;
 	}

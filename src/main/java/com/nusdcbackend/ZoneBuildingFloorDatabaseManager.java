@@ -32,8 +32,8 @@ public class ZoneBuildingFloorDatabaseManager {
 		return conn;
 	}
 
-	public void insertZoneBuildingFloor(String zone, String building, String floor) {
-		String insertSql = "INSERT INTO ZoneBuildingFloor (zone, building, floor)" + " VALUES(?,?,?)";
+	public void insertZoneBuildingFloor(String floorId, String zone, String building, String floor) {
+		String insertSql = "INSERT INTO ZoneBuildingFloor (floorId, zone, building, floor)" + " VALUES(?,?,?,?)";
 		String selectSql = "Select count(*) from ZoneBuildingFloor WHERE floor = ?";
 
 		try (Connection conn = this.connectZoneBuildingFloorDatabase();
@@ -46,9 +46,10 @@ public class ZoneBuildingFloorDatabaseManager {
 				count = resultSet.getInt(1);
 			}
 			if (count <= 0) {
-				insertStatement.setString(1, zone);
-				insertStatement.setString(2, building);
-				insertStatement.setString(3, floor);
+				insertStatement.setString(1, floorId);
+				insertStatement.setString(2, zone);
+				insertStatement.setString(3, building);
+				insertStatement.setString(4, floor);
 				insertStatement.executeUpdate();
 			}
 		} catch (SQLException e) {
@@ -133,7 +134,7 @@ public class ZoneBuildingFloorDatabaseManager {
 	public void writeZoneBuildingFloor() throws Exception {
 		Integer zoneId = 0;
 		Integer buildingId = 0;
-		Integer floorId = 1;
+		Integer floorId = 0;
 		zoneBuildingFloorManager.syncZoneList();
 		allZones = zoneBuildingFloorManager.getAllZones();
 		for (String zone : allZones) {
@@ -148,7 +149,8 @@ public class ZoneBuildingFloorDatabaseManager {
 				this.insertBuilding(buildingId.toString(), building, zoneId.toString());
 
 				for (String floor : allFloors) {
-					insertZoneBuildingFloor(zone, building, floor);
+					floorId++;
+					insertZoneBuildingFloor(floorId.toString(), zone, building, floor);
 					this.insertFloor(floorId.toString(), floor, buildingId.toString());
 				}
 			}

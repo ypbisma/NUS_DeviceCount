@@ -15,11 +15,13 @@ public class JobDeviceCount {
 	private ZoneBuildingFloorDatabaseManager zoneBuildingFloorDatabaseManager;
 	private Calendar cal = Calendar.getInstance();
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
+	private String floorId;
+	
 	private Integer zoneSum;
 	private Integer buildingSum;
 	private Integer uniSum;
-
+	
+	HashMap<String, String> floorMap = new HashMap<String, String>();
 	HashMap<String, String> buildingMap = new HashMap<String, String>();
 	HashMap<String, String> zoneMap = new HashMap<String, String>();
 
@@ -37,15 +39,22 @@ public class JobDeviceCount {
 		zoneList = zoneBuildingFloorDatabaseManager.getZones();
 		buildingList = zoneBuildingFloorDatabaseManager.getBuildings();
 		floorList = zoneBuildingFloorDatabaseManager.getFloors();
-
+		
+		for(Floor floor:floorList){
+			floorMap.put(floor.getFloorName(), floor.getFloorId());
+		}
+		
+		
 		uniSum = 0;
 		for (ZoneBuildingFloor item : zoneBuildingFloorList) {
 			deviceCountManager.setZoneName(item.getZone());
 			deviceCountManager.setBuildingName(item.getBuilding());
 			deviceCountManager.setFloorName(item.getFloor());
 			deviceCountManager.syncDeviceCount();
-			deviceCountDatabaseManager.insertDeviceCount(deviceCountManager.getZoneName(),
-					deviceCountManager.getBuildingName(), deviceCountManager.getFloorName(),
+			
+			floorId = floorMap.get(item.getFloor());
+			
+			deviceCountDatabaseManager.insertFloorAggregate(floorId, deviceCountManager.getFloorName(),
 					deviceCountManager.getDeviceCount().getCount().toString(), executeTime);
 			item.setCount(deviceCountManager.getDeviceCount().getCount().toString());
 
