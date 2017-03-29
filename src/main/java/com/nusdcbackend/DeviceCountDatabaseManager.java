@@ -554,7 +554,7 @@ public class DeviceCountDatabaseManager {
 
 	private String getTime(Calendar cal) {
 		String time;
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		time = sdf.format(cal.getTime());
 		return time;
 	}

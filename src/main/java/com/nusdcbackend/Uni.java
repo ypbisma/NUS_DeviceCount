@@ -43,7 +43,7 @@ public class Uni {
 
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
 		try {
 			time.setTime(sdf.parse(timeString));
 		} catch (ParseException e) {

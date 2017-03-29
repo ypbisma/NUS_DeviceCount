@@ -20,7 +20,7 @@ public class JobForecast {
 		forecaster = new DeviceCountForecaster();
 
 		// WeightedAverageMethod
-		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
+		double[] weights = { 0.8, 0.1, 0.1 };
 
 		for (Zone zone : zoneList) {
 			ArrayList<Zone> zoneAggregate = dcDatabaseManager.getAggregateZones();
@@ -47,7 +47,7 @@ public class JobForecast {
 		buildingList = zbfDatabaseManager.getBuildings();
 		forecaster = new DeviceCountForecaster();
 		// WeightedAverageMethod
-		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
+		double[] weights = { 0.8, 0.1, 0.1 };
 
 		for (Building building : buildingList) {
 			ArrayList<Building> buildingAggregate = dcDatabaseManager.getAggregateBuilding();
@@ -72,7 +72,7 @@ public class JobForecast {
 	public void forecastUni() {
 		forecaster = new DeviceCountForecaster();
 		// WeightedAverageMethod
-		double[] weights = { 0.4, 0.25, 0.15, 0.1, 0.1 };
+		double[] weights = { 0.8, 0.1, 0.1 };
 
 		ArrayList<Uni> uniAggregate = dcDatabaseManager.getAggregateUni();
 		Uni uniMa3 = forecaster.uniMovingAverage(uniAggregate, 3, "1", "NUS");

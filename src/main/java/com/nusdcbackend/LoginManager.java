@@ -20,7 +20,7 @@ public class LoginManager {
 	private static final String LOGIN_BRANCH = "/api/v1/user/login";
 	private static final String domain = "nusstu";
 	private static final String username = "A0115902";
-	private static final String password = "Password@41";
+	private static final String password = "Password@Sem8";
 
 	private String token;
 	private String loginUrl;
