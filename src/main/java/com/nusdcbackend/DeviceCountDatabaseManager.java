@@ -393,7 +393,6 @@ public class DeviceCountDatabaseManager {
 	public ArrayList<ForecastData> getForecastZones(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
-		String capitalisedType = type.substring(0, 1).toUpperCase() + type.substring(1);
 		String typeId = type + "Id";
 		String typeName = type + "Name";
 
@@ -420,7 +419,6 @@ public class DeviceCountDatabaseManager {
 	public ArrayList<ForecastData> getForecastBuildings(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
-		String capitalisedType = type.substring(0, 1).toUpperCase() + type.substring(1);
 		String typeId = type + "Id";
 		String typeName = type + "Name";
 
@@ -447,7 +445,6 @@ public class DeviceCountDatabaseManager {
 	public ArrayList<ForecastData> getForecastUni(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
-		String capitalisedType = type.substring(0, 1).toUpperCase() + type.substring(1);
 		String typeId = type + "Id";
 		String typeName = type + "Name";
 

@@ -37,7 +37,7 @@ public class JobForecast {
 					zoneWam.getTime(), "wam");
 
 			Zone zoneEs = forecaster.zoneExponentialSmoothing(dcDatabaseManager.getForecastZones("zone"),
-					dcDatabaseManager.getAggregateZones(), 0.5, zone.getZoneId(), zone.getZoneName());
+					dcDatabaseManager.getAggregateZones(), 1, zone.getZoneId(), zone.getZoneName());
 			dcDatabaseManager.insertZoneForecast(zoneEs.getZoneId(), zoneEs.getZoneName(), zoneEs.getCount(),
 					zoneEs.getTime(), "es");
 		}

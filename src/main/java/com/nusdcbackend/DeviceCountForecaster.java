@@ -8,7 +8,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class DeviceCountForecaster {
 
-	//ZONEFORECASTER
+	// ZONEFORECASTER
 	public Zone zoneMovingAverage(ArrayList<Zone> inputZoneArray, int step, String zoneId, String zoneName) {
 		Zone zoneToWrite = new Zone(zoneId, zoneName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
@@ -21,8 +21,6 @@ public class DeviceCountForecaster {
 				maTime = zoneAggregate.getTime();
 			}
 		}
-
-		HashMap<String, Double> zoneForecastKey = new HashMap<String, Double>();
 
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		stats.setWindowSize(step);
@@ -78,7 +76,6 @@ public class DeviceCountForecaster {
 		ArrayList<Double> forecastData = new ArrayList<>();
 		ArrayList<Double> zoneData = new ArrayList<>();
 		Double forecast;
-		int iter = 0;
 
 		for (Zone zoneAggregate : inputZoneCount) {
 			if (zoneAggregate.getZoneName().equals(zoneName)) {
@@ -97,7 +94,7 @@ public class DeviceCountForecaster {
 			forecastData.add((double) zoneData.get(zoneData.size() - 1));
 		}
 
-		if (forecastData.size() > 1 && zoneData.size() > 1) {
+		if (forecastData.size() >= 1 && zoneData.size() >= 1) {
 			forecast = forecastData.get(forecastData.size() - 1)
 					+ alpha * (zoneData.get(zoneData.size() - 1) - forecastData.get(forecastData.size() - 1));
 		} else {
@@ -108,9 +105,10 @@ public class DeviceCountForecaster {
 		zoneToWrite.setTime(esTime);
 		return zoneToWrite;
 	}
-	
-	//BUILDINGFORECASTER
-	public Building buildingMovingAverage(ArrayList<Building> inputBuildingArray, int step, String buildingId, String buildingName) {
+
+	// BUILDINGFORECASTER
+	public Building buildingMovingAverage(ArrayList<Building> inputBuildingArray, int step, String buildingId,
+			String buildingName) {
 		Building buildingToWrite = new Building(buildingId, buildingName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		Calendar maTime = null;
@@ -122,8 +120,6 @@ public class DeviceCountForecaster {
 				maTime = buildingAggregate.getTime();
 			}
 		}
-
-		HashMap<String, Double> buildingForecastKey = new HashMap<String, Double>();
 
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		stats.setWindowSize(step);
@@ -145,8 +141,9 @@ public class DeviceCountForecaster {
 		buildingToWrite.setTime(maTime);
 		return buildingToWrite;
 	}
-	
-	public Building buildingWeightedAverage(ArrayList<Building> inputBuildingArray, double[] weights, String buildingName, String buildingId) {
+
+	public Building buildingWeightedAverage(ArrayList<Building> inputBuildingArray, double[] weights,
+			String buildingName, String buildingId) {
 		Building buildingToWrite = new Building(buildingId, buildingName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		Calendar waTime = null;
@@ -171,8 +168,8 @@ public class DeviceCountForecaster {
 
 		return buildingToWrite;
 	}
-	
-	//UNIFORECASTER
+
+	// UNIFORECASTER
 	public Uni uniMovingAverage(ArrayList<Uni> inputUniArray, int step, String uniId, String uniName) {
 		Uni uniToWrite = new Uni(uniId, uniName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
@@ -185,8 +182,6 @@ public class DeviceCountForecaster {
 				maTime = uniAggregate.getTime();
 			}
 		}
-
-		HashMap<String, Double> buildingForecastKey = new HashMap<String, Double>();
 
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		stats.setWindowSize(step);
@@ -208,7 +203,7 @@ public class DeviceCountForecaster {
 		uniToWrite.setTime(maTime);
 		return uniToWrite;
 	}
-	
+
 	public Uni uniWeightedAverage(ArrayList<Uni> inputUniArray, double[] weights, String uniName, String uniId) {
 		Uni uniToWrite = new Uni(uniId, uniName);
 		ArrayList<Integer> integerList = new ArrayList<Integer>();

@@ -1,6 +1,5 @@
 package com.nusdcbackend;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,14 +12,10 @@ public class JobDeviceCount {
 	private ArrayList<Floor> floorList = new ArrayList<>();
 	private DeviceCountDatabaseManager deviceCountDatabaseManager = new DeviceCountDatabaseManager();
 	private ZoneBuildingFloorDatabaseManager zoneBuildingFloorDatabaseManager;
-	private Calendar cal = Calendar.getInstance();
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	private String floorId;
-	
-	private Integer zoneSum;
-	private Integer buildingSum;
+
 	private Integer uniSum;
-	
+
 	HashMap<String, String> floorMap = new HashMap<String, String>();
 	HashMap<String, String> buildingMap = new HashMap<String, String>();
 	HashMap<String, String> zoneMap = new HashMap<String, String>();
@@ -31,7 +26,7 @@ public class JobDeviceCount {
 	}
 
 	public void execute(Calendar executeTime) throws Exception {
-		System.out.println(executeTime.get(Calendar.DATE) + "-" + (1+executeTime.get(Calendar.MONTH)) + "-"
+		System.out.println(executeTime.get(Calendar.DATE) + "-" + (1 + executeTime.get(Calendar.MONTH)) + "-"
 				+ executeTime.get(Calendar.YEAR) + " " + executeTime.get(Calendar.HOUR_OF_DAY) + ":"
 				+ executeTime.get(Calendar.MINUTE) + ":" + executeTime.get(Calendar.SECOND));
 
@@ -39,21 +34,21 @@ public class JobDeviceCount {
 		zoneList = zoneBuildingFloorDatabaseManager.getZones();
 		buildingList = zoneBuildingFloorDatabaseManager.getBuildings();
 		floorList = zoneBuildingFloorDatabaseManager.getFloors();
-		
-		for(Floor floor:floorList){
+
+		for (Floor floor : floorList) {
 			floorMap.put(floor.getFloorName(), floor.getFloorId());
 		}
-		
-		
+
 		uniSum = 0;
 		for (ZoneBuildingFloor item : zoneBuildingFloorList) {
 			deviceCountManager.setZoneName(item.getZone());
 			deviceCountManager.setBuildingName(item.getBuilding());
 			deviceCountManager.setFloorName(item.getFloor());
+
 			deviceCountManager.syncDeviceCount();
-			
+
 			floorId = floorMap.get(item.getFloor());
-			
+
 			deviceCountDatabaseManager.insertFloorAggregate(floorId, deviceCountManager.getFloorName(),
 					deviceCountManager.getDeviceCount().getCount().toString(), executeTime);
 			item.setCount(deviceCountManager.getDeviceCount().getCount().toString());
