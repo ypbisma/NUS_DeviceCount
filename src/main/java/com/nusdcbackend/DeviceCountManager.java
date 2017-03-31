@@ -55,7 +55,6 @@ public class DeviceCountManager {
 
 			this.setDeviceCountObject(gson.fromJson(result.toString(), DeviceCountObject.class));
 			deviceCount = deviceCountObject.getDeviceCount();
-
 		} catch (UnknownHostException e) {
 			System.out.println("no internet connection!");
 		} catch (Exception e) {

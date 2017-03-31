@@ -90,14 +90,12 @@ public class DeviceCountForecaster {
 			}
 		}
 
-		if (forecastData.size() == 0) {
-			forecastData.add((double) zoneData.get(zoneData.size() - 1));
-		}
-
 		if (forecastData.size() >= 1 && zoneData.size() >= 1) {
 			forecast = forecastData.get(forecastData.size() - 1)
-					+ alpha * (zoneData.get(zoneData.size() - 1) - forecastData.get(forecastData.size() - 1));
+					+ alpha * (zoneData.get(zoneData.size() - 2) - forecastData.get(forecastData.size() - 1));
+
 		} else {
+			forecastData.add((double) zoneData.get(zoneData.size() - 1));
 			forecast = forecastData.get(0);
 		}
 
@@ -168,6 +166,43 @@ public class DeviceCountForecaster {
 
 		return buildingToWrite;
 	}
+	
+	public Building buildingExponentialSmoothing(ArrayList<ForecastData> inputBuildingForecast, ArrayList<Building> inputBuildingCount,
+			double alpha, String buildingId, String buildingName) {
+		Building buildingToWrite = new Building(buildingId, buildingName);
+		Calendar esTime = null;
+		ArrayList<Double> forecastData = new ArrayList<>();
+		ArrayList<Double> buildingData = new ArrayList<>();
+		Double forecast;
+
+		for (Building buildingAggregate : inputBuildingCount) {
+			if (buildingAggregate.getBuildingName().equals(buildingName)) {
+				buildingData.add((double) Integer.parseInt(buildingAggregate.getCount()));
+				esTime = buildingAggregate.getTime();
+			}
+		}
+
+		for (ForecastData forecastItem : inputBuildingForecast) {
+			if (forecastItem.getLocation().equals(buildingName)) {
+				forecastData.add(Double.parseDouble(forecastItem.getEs()));
+			}
+		}
+
+		if (forecastData.size() >= 1 && buildingData.size() >= 1) {
+			forecast = forecastData.get(forecastData.size() - 1)
+					+ alpha * (buildingData.get(buildingData.size() - 2) - forecastData.get(forecastData.size() - 1));
+			System.out.println("forecast = " + forecastData.get(forecastData.size() - 1) + " + " + alpha + " * ("
+					+ buildingData.get(buildingData.size() - 2) + " - " + forecastData.get(forecastData.size() - 1));
+
+		} else {
+			forecastData.add((double) buildingData.get(buildingData.size() - 1));
+			forecast = forecastData.get(0);
+			System.out.println("here");
+		}
+		buildingToWrite.setCount(forecast.toString());
+		buildingToWrite.setTime(esTime);
+		return buildingToWrite;
+	}
 
 	// UNIFORECASTER
 	public Uni uniMovingAverage(ArrayList<Uni> inputUniArray, int step, String uniId, String uniName) {
@@ -227,6 +262,42 @@ public class DeviceCountForecaster {
 		uniToWrite.setCount(average.toString());
 		uniToWrite.setTime(waTime);
 
+		return uniToWrite;
+	}
+
+	public Uni uniExponentialSmoothing(ArrayList<ForecastData> inputUniForecast, ArrayList<Uni> inputUniCount,
+			double alpha, String uniId, String uniName) {
+		Uni uniToWrite = new Uni(uniId, uniName);
+		Calendar esTime = null;
+		ArrayList<Double> forecastData = new ArrayList<>();
+		ArrayList<Double> uniData = new ArrayList<>();
+		Double forecast;
+
+		for (Uni uniAggregate : inputUniCount) {
+			if (uniAggregate.getUniName().equals(uniName)) {
+				uniData.add((double) Integer.parseInt(uniAggregate.getCount()));
+				esTime = uniAggregate.getTime();
+			}
+		}
+
+		for (ForecastData forecastItem : inputUniForecast) {
+
+			if (forecastItem.getLocation().equals(uniName)) {
+				forecastData.add(Double.parseDouble(forecastItem.getEs()));
+			}
+		}
+
+		if (forecastData.size() >= 1 && uniData.size() >= 1) {
+			forecast = forecastData.get(forecastData.size() - 1)
+					+ alpha * (uniData.get(uniData.size() - 2) - forecastData.get(forecastData.size() - 1));
+
+		} else {
+			forecastData.add((double) uniData.get(uniData.size() - 1));
+			forecast = forecastData.get(0);
+		}
+
+		uniToWrite.setCount(forecast.toString());
+		uniToWrite.setTime(esTime);
 		return uniToWrite;
 	}
 }

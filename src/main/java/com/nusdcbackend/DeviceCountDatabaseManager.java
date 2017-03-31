@@ -465,6 +465,7 @@ public class DeviceCountDatabaseManager {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
 		return forecastList;
 	}
 

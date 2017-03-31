@@ -21,7 +21,7 @@ public class ProjectMain {
 //		zbfManager = new ZoneBuildingFloorDatabaseManager (token);
 //		zbfManager.writeZoneBuildingFloor();
 		deviceCountList = new DeviceCountDatabaseManager();
-		deviceCountList.emptyDeviceCountDatabase();
+//		deviceCountList.emptyDeviceCountDatabase();
 		deviceCountList.emptyForecastTable();
 		
 		try {
