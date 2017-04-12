@@ -1,3 +1,14 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+
+//This class is designed to contain the information from the zone device count database
+
+
 package com.nusdcbackend;
 
 import java.text.ParseException;

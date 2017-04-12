@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is responsible for making a HTML GET Request and form a link with the NUS API, in order to get the device count data
+
 package com.nusdcbackend;
 
 import java.io.BufferedReader;

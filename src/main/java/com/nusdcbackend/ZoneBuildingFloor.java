@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is used to store the information of zone, building and floor of a particular location
+
 package com.nusdcbackend;
 
 public class ZoneBuildingFloor {

@@ -1,3 +1,10 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
 package com.nusdcbackend;
 
 import java.util.ArrayList;
@@ -187,17 +194,15 @@ public class DeviceCountForecaster {
 				forecastData.add(Double.parseDouble(forecastItem.getEs()));
 			}
 		}
-
+		
+		
 		if (forecastData.size() >= 1 && buildingData.size() >= 1) {
 			forecast = forecastData.get(forecastData.size() - 1)
 					+ alpha * (buildingData.get(buildingData.size() - 2) - forecastData.get(forecastData.size() - 1));
-			System.out.println("forecast = " + forecastData.get(forecastData.size() - 1) + " + " + alpha + " * ("
-					+ buildingData.get(buildingData.size() - 2) + " - " + forecastData.get(forecastData.size() - 1));
 
 		} else {
 			forecastData.add((double) buildingData.get(buildingData.size() - 1));
 			forecast = forecastData.get(0);
-			System.out.println("here");
 		}
 		buildingToWrite.setCount(forecast.toString());
 		buildingToWrite.setTime(esTime);

@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+
+//This class is designed to contain the information from the building device count database
 package com.nusdcbackend;
 
 import java.text.ParseException;
@@ -58,6 +67,7 @@ public class Building {
 		this.count = count;
 	}
 	
+	//stringToCalendar takes in the time in string format and convert it to a Calendar object
 	private Calendar stringToCalendar(String timeString) {
 		Calendar time = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);

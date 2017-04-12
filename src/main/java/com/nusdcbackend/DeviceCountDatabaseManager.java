@@ -1,3 +1,11 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is responsible for writing the actual device count and forecasted device count into the database file
 package com.nusdcbackend;
 
 import java.sql.Connection;
@@ -13,7 +21,7 @@ import java.util.Calendar;
 public class DeviceCountDatabaseManager {
 
 	private Connection connectDeviceCountDatabase() {
-		// SQLite connection strings
+		//url is the address of the database
 		String url = "jdbc:sqlite:/Users/Bisma/DeviceCount/DeviceCount_Serverapp/nusdc.db";
 		Connection conn = null;
 		try {
@@ -23,7 +31,8 @@ public class DeviceCountDatabaseManager {
 		}
 		return conn;
 	}
-
+	
+	//for individual floor device count insertFloorAggregate takes in the variables of floorId, floorName, deviceCount and cal and write them into the database, in the AggregateFloor table
 	public void insertFloorAggregate(String floorId, String floorName, String deviceCount, Calendar cal) {
 		String insertSql = "INSERT INTO AggregateFloor (floorId, floorName, deviceCount, time, date)"
 				+ " VALUES(?,?,?,?,?)";
@@ -43,6 +52,7 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
+	//for building device counts insertBuildingAggregate takes in the variables of buildingId, buildingName, deviceCount and cal and write them into the database, in the AggregateFloor table
 	public void insertBuildingAggregate(String buildingId, String buildingName, String deviceCount, Calendar cal) {
 		String insertSql = "INSERT INTO AggregateBuilding (buildingId, buildingName, deviceCount, time, date)"
 				+ " VALUES(?,?,?,?,?)";
@@ -60,7 +70,8 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
-
+	
+	//for zone device counts insertZoneAggregate takes in the variables of zoneId, zoneName, deviceCount and cal and write them into the database, in the AggregateFloor table
 	public void insertZoneAggregate(String zoneId, String zoneName, String deviceCount, Calendar cal) {
 		String insertSql = "INSERT INTO AggregateZone (zoneId, zoneName, deviceCount, time, date)"
 				+ " VALUES(?,?,?,?,?)";
@@ -78,6 +89,8 @@ public class DeviceCountDatabaseManager {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	//for the device count of entire university insertUniAggregate takes in the variables of uniId, uniName, deviceCount and cal and write them into the database, in the AggregateFloor table
 
 	public void insertUniAggregate(String uniId, String uniName, String deviceCount, Calendar cal) {
 		String insertSql = "INSERT INTO AggregateUniversity (uniId, uniName, deviceCount, time, date)"
@@ -98,7 +111,8 @@ public class DeviceCountDatabaseManager {
 	}
 
 	// FORECAST
-
+	
+	//forecasts made based on zone device counts
 	public void insertZoneForecast(String zoneId, String zoneName, String forecast, Calendar cal, String method) {
 		String insertSql = null;
 		String updateSql = null;
@@ -112,6 +126,7 @@ public class DeviceCountDatabaseManager {
 		Integer itemExistsRow = 0;
 
 		switch (method) {
+		//choosing the method of forecast
 		case "ma3":
 			insertSql = "INSERT INTO ForecastZoneMa3 (zoneId, zoneName, ma3, time, date)" + " VALUES(?,?,?,?,?)";
 			updateSql = "UPDATE ForecastZoneMa3 set ma3 = ? where rowid = ?";
@@ -172,6 +187,7 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
+	//forecasts made based on building device counts
 	public void insertBuildingForecast(String buildingId, String buildingName, String forecast, Calendar cal,
 			String method) {
 		String insertSql = null;
@@ -186,6 +202,7 @@ public class DeviceCountDatabaseManager {
 		Integer itemExistsRow = 0;
 
 		switch (method) {
+		//selecting method of forecast
 		case "ma3":
 			insertSql = "INSERT INTO ForecastBuildingMa3 (buildingId, buildingName, ma3, time, date)"
 					+ " VALUES(?,?,?,?,?)";
@@ -251,6 +268,7 @@ public class DeviceCountDatabaseManager {
 		}
 	}
 
+	//forecasts made based on university device count
 	public void insertUniForecast(String uniId, String uniName, String forecast, Calendar cal, String method) {
 		String insertSql = null;
 		String updateSql = null;
@@ -322,7 +340,7 @@ public class DeviceCountDatabaseManager {
 	}
 
 	// DATABASE GETTER
-
+	//getting the data of the zone device counts
 	public ArrayList<Zone> getAggregateZones() {
 
 		ArrayList<Zone> zoneList = new ArrayList<>();
@@ -346,6 +364,7 @@ public class DeviceCountDatabaseManager {
 		return zoneList;
 	}
 
+	//getting the data of the building device counts
 	public ArrayList<Building> getAggregateBuilding() {
 
 		ArrayList<Building> buildingList = new ArrayList<>();
@@ -367,7 +386,8 @@ public class DeviceCountDatabaseManager {
 		}
 		return buildingList;
 	}
-	
+
+	//getting the data of the university device counts	
 	public ArrayList<Uni> getAggregateUni() {
 
 		ArrayList<Uni> uniList = new ArrayList<>();
@@ -390,6 +410,7 @@ public class DeviceCountDatabaseManager {
 		return uniList;
 	}
 
+	//getting the data of the zone forecasts
 	public ArrayList<ForecastData> getForecastZones(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
@@ -416,6 +437,7 @@ public class DeviceCountDatabaseManager {
 		return forecastList;
 	}
 
+	//getting the data of the building forecast
 	public ArrayList<ForecastData> getForecastBuildings(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
@@ -442,6 +464,7 @@ public class DeviceCountDatabaseManager {
 		return forecastList;
 	}
 
+	//getting the data of the uni forecast
 	public ArrayList<ForecastData> getForecastUni(String type) {
 
 		ArrayList<ForecastData> forecastList = new ArrayList<>();
@@ -470,7 +493,7 @@ public class DeviceCountDatabaseManager {
 	}
 
 	// EMPTY FUNCTIONS
-
+	//delete all actual device count tables
 	public void emptyDeviceCountDatabase() {
 
 		String deleteZoneBuildingFloor = "DELETE from AggregateFloor";
@@ -496,7 +519,7 @@ public class DeviceCountDatabaseManager {
 	}
 
 	public void emptyForecastTable() {
-
+		//delete all tables containing forecast data
 		String deleteZoneEs = "DELETE from ForecastZoneEs";
 		String deleteZoneWa = "DELETE from ForecastZoneWa";
 		String deleteZoneMa3 = "DELETE from ForecastZoneMa3";

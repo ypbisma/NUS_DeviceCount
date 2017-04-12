@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+
+//This class is the Project's Main class, with a quartz framework that triggers the job of executing data extraction every 5 minute
 package com.nusdcbackend;
 
 import org.quartz.JobDetail;
@@ -33,8 +42,8 @@ public class ProjectMain {
 
 			// Trigger the job to run now, and then repeat every 40 seconds
 			Trigger trigger1 = newTrigger().withIdentity("trigger1", "group1").startNow()
-					.withSchedule(simpleSchedule().withIntervalInSeconds(300).repeatForever()).build();
-
+					.withSchedule(simpleSchedule().withIntervalInSeconds(60000).repeatForever()).build();
+			//300 = 5 minutes
 			// Tell quartz to schedule the job using our trigger
 			scheduler1.scheduleJob(job1, trigger1);
 

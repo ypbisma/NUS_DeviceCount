@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is responsible for the login action and getting the resultant token
+
 package com.nusdcbackend;
 
 import java.net.UnknownHostException;

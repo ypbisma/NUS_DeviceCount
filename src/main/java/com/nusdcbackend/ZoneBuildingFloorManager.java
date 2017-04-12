@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is responsible for the extraction of all zone, building and floor names from the NUS API
+
 package com.nusdcbackend;
 
 import java.io.BufferedReader;

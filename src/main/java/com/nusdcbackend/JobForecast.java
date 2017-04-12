@@ -1,3 +1,14 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+
+//This class is designed to extract the data from the actual device count database, execute the calculation and write the forecast information back into the database
+//4 methods are used in each function: 3-step moving average, 5-step moving average, Weighted Average and Exponential Smoothing
+
 package com.nusdcbackend;
 
 import java.util.ArrayList;
@@ -174,7 +185,6 @@ public class JobForecast {
 		double[] weights = { 0.8, 0.1, 0.1 };
 		
 		for (Building building : buildingList) {
-			System.out.println(building.getBuildingId());
 			buildingIdSpecifiedCountHolder.clear();
 			buildingCountHolderSpecifiedId.clear();
 			ArrayList<Building> buildingAggregate = dcDatabaseManager.getAggregateBuilding();
@@ -203,7 +213,7 @@ public class JobForecast {
 						buildingWam.getCount(), buildingWam.getTime(), "wam");
 			
 				Building buildingEs = forecaster.buildingExponentialSmoothing(dcDatabaseManager.getForecastBuildings("building"),
-						buildingCountHolderSpecifiedId, alpha, building.getZoneId(), building.getBuildingName());
+						buildingCountHolderSpecifiedId, alpha, building.getBuildingId(), building.getBuildingName());
 				dcDatabaseManager.insertBuildingForecast(buildingEs.getBuildingId(), buildingEs.getBuildingName(), buildingEs.getCount(),
 						buildingEs.getTime(), "es");
 				

@@ -1,3 +1,12 @@
+//**NUSWATCH-DEVICECOUNT**
+//**A FINAL YEAR PROJECT**
+//**BY YOHANES PAULUS BISMA**
+//**A0115902N**
+//**INDUSTRIAL SYSTEMS ENGINEERING & MANAGEMENT**
+//**2016/2017**
+
+//This class is designed to execute the different jobs
+
 package com.nusdcbackend;
 
 import java.util.Calendar;
@@ -28,12 +37,13 @@ public class ScheduledJob implements org.quartz.Job {
 //			jobForecast.forecastZone();
 //			jobForecast.forecastBuilding();
 //			jobForecast.forecastUni();
-//			System.out.println("begin filling uni");
-//			jobForecast.fillForecastUni();
-//			System.out.println("begin filling zone");
-//			jobForecast.fillForecastZone();
+			System.out.println("begin filling uni");
+			jobForecast.fillForecastUni();
+			System.out.println("begin filling zone");
+			jobForecast.fillForecastZone();
 			System.out.println("begin filling building");
 			jobForecast.fillForecastBuilding();
+			System.out.println("done");
 
 		} catch (NullPointerException e) {
 			System.out.println(e.getMessage());
